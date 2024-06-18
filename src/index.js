@@ -1,11 +1,13 @@
 #! /usr/bin/env node
-import core from '@actions/core';
-import github from '@actions/github';
 
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
+
+import core from '@actions/core';
+import github from '@actions/github';
 import { program } from 'commander';
+
 import Changelog from './changelog.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -23,11 +25,20 @@ const options = program.parse(process.argv).opts();
 
 let changelog;
 
-const CHANGELOG_PATH = process.env.CHANGELOG_PATH || path.resolve(__dirname, '../../CHANGELOG.md');
+// const CHANGELOG_PATH = process.env.CHANGELOG_PATH || path.resolve(__dirname, '../../CHANGELOG.md');
+
+let changelogPath = core.getInput('changelog') || 'CHANGELOG.md';
+
+if (!path.isAbsolute(changelogPath)) {
+  const root = process.env.GITHUB_WORKSPACE || process.cwd();
+
+  changelogPath = path.join(root, changelogPath);
+}
+
 const ENCODING = 'UTF-8';
 
 try {
-  const changelogContent = await fs.readFile(CHANGELOG_PATH, ENCODING);
+  const changelogContent = await fs.readFile(changelogPath, ENCODING);
 
   changelog = new Changelog(changelogContent);
 } catch (error) {
