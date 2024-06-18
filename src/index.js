@@ -2,67 +2,44 @@
 
 import fs from 'fs/promises';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
-import core from '@actions/core';
-// import github from '@actions/github';
-// import { program } from 'commander';
+import { program } from 'commander';
 
 import Changelog from './changelog.js';
 
-// program
-//   .name('changelog')
-//   .description('A command-line utility for managing the changelog file')
-//   .option('--validate', 'Validate the changelog, ensuring it follows the expected format and contains required information')
-//   .option('--release [PRNumber]', 'Convert the Unreleased section into a new release in the changelog, optionally linking to a pull request with the provided PRNumber')
-//   .option('--clean-unreleased', 'Remove the Unreleased section')
-//   .option('--get-release-type', 'Get the release type of the Unreleased section in the changelog')
-//   .option('--get-version-content <version>', 'Get the content of the given version in the changelog');
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// const options = program.parse(process.argv).opts();
+program
+  .name('changelog')
+  .description('A command-line utility for managing the changelog file')
+  .option('--validate', 'Validate the changelog, ensuring it follows the expected format and contains required information')
+  .option('--release [PRNumber]', 'Convert the Unreleased section into a new release in the changelog, optionally linking to a pull request with the provided PRNumber')
+  .option('--clean-unreleased', 'Remove the Unreleased section')
+  .option('--get-release-type', 'Get the release type of the Unreleased section in the changelog')
+  .option('--get-version-content <version>', 'Get the content of the given version in the changelog');
 
-const options = {
-  validate: core.getBooleanInput('validate'),
-  getReleaseType: core.getBooleanInput('get-release-type'),
-  getVersionContent: core.getInput('get-version-content'),
-  release: core.getInput('release'),
-  cleanUnreleased: core.getBooleanInput('clean-unreleased'),
-};
-
-console.log('options', options);
+const options = program.parse(process.argv).opts();
 
 let changelog;
 
-let changelogPath = core.getInput('changelog') || 'CHANGELOG.md';
-
-if (!path.isAbsolute(changelogPath)) {
-  const root = process.env.GITHUB_WORKSPACE || process.cwd();
-
-  changelogPath = path.join(root, changelogPath);
-}
-
+const CHANGELOG_PATH = path.resolve(__dirname, '../../CHANGELOG.md');
 const ENCODING = 'UTF-8';
 
-console.log('Action called');
-
 try {
-  const changelogContent = await fs.readFile(changelogPath, ENCODING);
-
-  console.log('changelogContent', changelogContent);
+  const changelogContent = await fs.readFile(CHANGELOG_PATH, ENCODING);
 
   changelog = new Changelog(changelogContent);
 } catch (error) {
   console.log(error.message);
 }
 
-if (options.getReleaseType) {
-  console.log('getReleaseType');
-  process.stdout.write(changelog.releaseType || 'No release type found');
+if (options.validate) {
+  changelog.validateUnreleased();
 }
 
-if (options.validate) {
-  console.log('Validation');
-  changelog.validateUnreleased();
-  console.log('Changelog valid!');
+if (options.getReleaseType) {
+  process.stdout.write(changelog.releaseType || 'No release type found');
 }
 
 if (options.getVersionContent) {
@@ -73,10 +50,10 @@ if (options.release) {
   const PRNumber = typeof options.release == 'boolean' ? null : options.release;
 
   changelog.release(PRNumber);
-  await fs.writeFile(changelogPath, changelog.toString(), ENCODING);
+  await fs.writeFile(CHANGELOG_PATH, changelog.toString(), ENCODING);
 }
 
 if (options.cleanUnreleased) {
   changelog.cleanUnreleased();
-  await fs.writeFile(changelogPath, changelog.toString(), ENCODING);
+  await fs.writeFile(CHANGELOG_PATH, changelog.toString(), ENCODING);
 }
