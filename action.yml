@@ -33,3 +33,4 @@ runs:
       run: |
         echo "release_type=${{ steps.validate-changelog.outputs.release_type }}" >> $GITHUB_OUTPUT
         echo "no_functional_changes=${{ steps.check-functional-changes.outputs.no_functional_changes }}" >> $GITHUB_OUTPUT
+      shell: bash
