@@ -11,7 +11,7 @@ import Changelog from './changelog.js';
 import { run, AVAILABLE_ACTIONS } from './main.js';
 
 chai.use(chaiAsPromised);
-describe.only('main', () => {
+describe('main', () => {
   let coreStubs;
   let changelogStubs;
   let writeFileStub;
