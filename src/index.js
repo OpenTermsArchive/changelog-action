@@ -54,13 +54,15 @@ try {
   console.log(error.message);
 }
 
-if (options.validate) {
-  changelog.validateUnreleased();
-  console.log('Changelog valid!');
+if (options.getReleaseType) {
+  console.log('getReleaseType');
+  process.stdout.write(changelog.releaseType || 'No release type found');
 }
 
-if (options.getReleaseType) {
-  process.stdout.write(changelog.releaseType || 'No release type found');
+if (options.validate) {
+  console.log('Validation');
+  changelog.validateUnreleased();
+  console.log('Changelog valid!');
 }
 
 if (options.getVersionContent) {
