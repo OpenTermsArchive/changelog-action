@@ -21,11 +21,11 @@ import Changelog from './changelog.js';
 // const options = program.parse(process.argv).opts();
 
 const options = {
-  validate: core.getInput('validate'),
-  getReleaseType: core.getInput('get-release-type'),
+  validate: core.getBooleanInput('validate'),
+  getReleaseType: core.getBooleanInput('get-release-type'),
   getVersionContent: core.getInput('get-version-content'),
   release: core.getInput('release'),
-  cleanUnreleased: core.getInput('clean-unreleased'),
+  cleanUnreleased: core.getBooleanInput('clean-unreleased'),
 };
 
 console.log('options', options);
