@@ -5,20 +5,30 @@ import path from 'path';
 
 import core from '@actions/core';
 // import github from '@actions/github';
-import { program } from 'commander';
+// import { program } from 'commander';
 
 import Changelog from './changelog.js';
 
-program
-  .name('changelog')
-  .description('A command-line utility for managing the changelog file')
-  .option('--validate', 'Validate the changelog, ensuring it follows the expected format and contains required information')
-  .option('--release [PRNumber]', 'Convert the Unreleased section into a new release in the changelog, optionally linking to a pull request with the provided PRNumber')
-  .option('--clean-unreleased', 'Remove the Unreleased section')
-  .option('--get-release-type', 'Get the release type of the Unreleased section in the changelog')
-  .option('--get-version-content <version>', 'Get the content of the given version in the changelog');
+// program
+//   .name('changelog')
+//   .description('A command-line utility for managing the changelog file')
+//   .option('--validate', 'Validate the changelog, ensuring it follows the expected format and contains required information')
+//   .option('--release [PRNumber]', 'Convert the Unreleased section into a new release in the changelog, optionally linking to a pull request with the provided PRNumber')
+//   .option('--clean-unreleased', 'Remove the Unreleased section')
+//   .option('--get-release-type', 'Get the release type of the Unreleased section in the changelog')
+//   .option('--get-version-content <version>', 'Get the content of the given version in the changelog');
 
-const options = program.parse(process.argv).opts();
+// const options = program.parse(process.argv).opts();
+
+const options = {
+  validate: core.getInput('validate'),
+  getReleaseType: core.getInput('get-release-type'),
+  getVersionContent: core.getInput('get-version-content'),
+  release: core.getInput('release'),
+  cleanUnreleased: core.getInput('clean-unreleased'),
+};
+
+console.log('options', options);
 
 let changelog;
 
