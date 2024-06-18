@@ -19,9 +19,11 @@ runs:
         if grep -q "## Unreleased \[no-release\]" CHANGELOG.md; then
           echo "NO_FUNCTIONAL_CHANGES=true" >> $GITHUB_ENV
         fi
+      shell: bash
 
     - name: Print result
       id: set_no_functional_changes
       run: |
         echo "no_functional_changes='${{ env.NO_FUNCTIONAL_CHANGES }}'"
         echo "no_functional_changes=${{ env.NO_FUNCTIONAL_CHANGES }}" >> $GITHUB_OUTPUT
+      shell: bash
