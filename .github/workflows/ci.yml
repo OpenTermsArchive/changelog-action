@@ -21,7 +21,7 @@ jobs:
         id: checkout
         uses: actions/checkout@v4
 
-      - name: Test Local Action
+      - name: Test Action option get-release-type
         id: test-get-release-type
         uses: ./
         with:
@@ -30,7 +30,7 @@ jobs:
       - name: Print Output
         run: echo "${{ steps.test-get-release-type.outputs.type }}"
       
-      - name: Test Local Action
+      - name: Test Action option get-version-content
         id: test-get-version-content
         uses: ./
         with:
@@ -39,7 +39,27 @@ jobs:
       - name: Print Output
         run: echo "${{ steps.test-get-version-content.outputs.content }}"
 
-      - name: Test Local Action
+      - name: Test Action option validate
         uses: ./
         with:
           validate: true
+      
+      - name: Test Action option clean-unreleased
+        uses: ./
+        with:
+          clean-unreleased: true
+
+      - name: Print Output
+        run: cat CHANGELOG.md
+      
+      - name: Remove changes
+        run: |
+          git reset --hard 
+
+      - name: Test Action option clean-unreleased
+        uses: ./
+        with:
+          release: ${{ github.event.number }}
+      
+      - name: Print Output
+        run: cat CHANGELOG.md
