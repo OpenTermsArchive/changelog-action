@@ -2,15 +2,12 @@
 
 import fs from 'fs/promises';
 import path from 'path';
-import { fileURLToPath } from 'url';
 
 import core from '@actions/core';
-import github from '@actions/github';
+// import github from '@actions/github';
 import { program } from 'commander';
 
 import Changelog from './changelog.js';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 program
   .name('changelog')
