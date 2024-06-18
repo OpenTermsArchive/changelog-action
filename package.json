@@ -8,11 +8,12 @@
     "start": "node index.js"
   },
   "dependencies": {
+    "@actions/core": "^1.10.1",
+    "@actions/github": "^6.0.0",
     "commander": "^9.4.1",
-    "semver": "^7.6.0",
-    "keep-a-changelog": "^2.5.3"
+    "keep-a-changelog": "^2.5.3",
+    "semver": "^7.6.0"
   },
-  "devDependencies": {},
   "author": "Your Name",
   "license": "MIT"
 }

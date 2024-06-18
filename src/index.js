@@ -1,4 +1,6 @@
 #! /usr/bin/env node
+import core from '@actions/core';
+import github from '@actions/github';
 
 import fs from 'fs/promises';
 import path from 'path';
