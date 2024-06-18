@@ -23,14 +23,12 @@ jobs:
         uses: ./changelog-manager
         with:
           action: 'validate'
-          changelogPath: 'CHANGELOG.md'
       
       - name: Test Changelog Manager - Get Release Type
         uses: ./changelog-manager
         id: get-release-type
         with:
           action: 'get-release-type'
-          changelogPath: 'CHANGELOG.md'
 
       - name: Print Output
         run: echo "${{ steps.get-release-type.outputs.type }}"
