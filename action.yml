@@ -1,0 +1,15 @@
+name: 'Changelog Manager'
+description: 'A GitHub Action to manage changelogs'
+inputs:
+  command:
+    description: 'The command to execute'
+    required: true
+  pr_number:
+    description: 'Pull request number for release'
+    required: false
+  version:
+    description: 'Version to get content for'
+    required: false
+runs:
+  using: 'node12'
+  main: 'index.js'
