@@ -25,8 +25,6 @@ const options = program.parse(process.argv).opts();
 
 let changelog;
 
-// const CHANGELOG_PATH = process.env.CHANGELOG_PATH || path.resolve(__dirname, '../../CHANGELOG.md');
-
 let changelogPath = core.getInput('changelog') || 'CHANGELOG.md';
 
 if (!path.isAbsolute(changelogPath)) {
@@ -61,10 +59,10 @@ if (options.release) {
   const PRNumber = typeof options.release == 'boolean' ? null : options.release;
 
   changelog.release(PRNumber);
-  await fs.writeFile(CHANGELOG_PATH, changelog.toString(), ENCODING);
+  await fs.writeFile(changelogPath, changelog.toString(), ENCODING);
 }
 
 if (options.cleanUnreleased) {
   changelog.cleanUnreleased();
-  await fs.writeFile(CHANGELOG_PATH, changelog.toString(), ENCODING);
+  await fs.writeFile(changelogPath, changelog.toString(), ENCODING);
 }
