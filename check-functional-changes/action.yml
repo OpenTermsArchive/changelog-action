@@ -10,6 +10,8 @@ outputs:
 
 runs:
   using: "composite"
+  outputs:
+    no_functional_changes: ${{ steps.set_no_functional_changes.outputs.no_functional_changes }}
   steps:
     - name: Checkout code
       uses: actions/checkout@v4

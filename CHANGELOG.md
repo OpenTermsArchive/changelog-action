@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased [minor]
+## Unreleased [no-release]
 
 > Development of this release was supported by the [French Ministry for Foreign Affairs](https://www.diplomatie.gouv.fr/fr/politique-etrangere-de-la-france/diplomatie-numerique/) through its ministerial [State Startups incubator](https://beta.gouv.fr/startups/open-terms-archive.html) under the aegis of the Ambassador for Digital Affairs.
 

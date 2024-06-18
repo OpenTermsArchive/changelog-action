@@ -6,7 +6,7 @@ import ChangelogValidationError from './changelogValidationError.js';
 export default class Changelog {
   static NO_CODE_CHANGES_REGEX = /^_No code changes were made in this release(.+)_$/m;
   static FUNDER_REGEX = /^> Development of this release was (?:supported|made on a volunteer basis) by (.+)\.$/m;
-  static UNRELEASED_REGEX = /## Unreleased[ ]+\[(major|minor|patch)\]/i;
+  static UNRELEASED_REGEX = /## Unreleased[ ]+\[(major|minor|patch|no-release)\]/i;
   static CHANGESET_LINK_REGEX = /^_Full changeset and discussions: (.+)._$/m;
   static CHANGESET_LINK_TEMPLATE = PRNumber => `_Full changeset and discussions: [#${PRNumber}](https://github.com/OpenTermsArchive/engine/pull/${PRNumber})._`;
   static CHANGELOG_INTRO = 'All changes that impact users of this module are documented in this file, in the [Common Changelog](https://common-changelog.org) format with some additional specifications defined in the CONTRIBUTING file. This codebase adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).';
