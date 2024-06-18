@@ -19,7 +19,7 @@ runs:
       shell: bash
 
     - name: Validate changelog
-      uses: ../changelog-manager
+      uses: OpenTermsArchive/manage-changelog@v1
       with:
         action: 'validate'
     
