@@ -7,62 +7,72 @@ import core from '@actions/core';
 
 import Changelog from './changelog.js';
 
+const ENCODING = 'UTF-8';
+
+export const AVAILABLE_ACTIONS = {
+  VALIDATE: 'validate',
+  GET_RELEASE_TYPE: 'get-release-type',
+  GET_VERSION_CONTENT: 'get-version-content',
+  RELEASE: 'release',
+  CLEAN_UNRELEASED: 'clean-unreleased',
+};
+
 export async function run() {
+  // const options = {
+  //   validate: core.getBooleanInput('validate'),
+  //   getReleaseType: core.getBooleanInput('get-release-type'),
+  //   getVersionContent: core.getInput('get-version-content'),
+  //   release: core.getInput('release'),
+  //   cleanUnreleased: core.getBooleanInput('clean-unreleased'),
+  // };
+
   const options = {
-    validate: core.getBooleanInput('validate'),
-    getReleaseType: core.getBooleanInput('get-release-type'),
-    getVersionContent: core.getInput('get-version-content'),
-    release: core.getInput('release'),
-    cleanUnreleased: core.getBooleanInput('clean-unreleased'),
+    action: core.getInput('action'),
+    version: core.getInput('version'),
+    changelogPath: core.getInput('changelogPath') || 'CHANGELOG.md',
+    PRNumber: core.getInput('PRNumber'),
   };
 
-  console.log('options', options);
+  // Valider que laction existe bien
+
+  // console.log('options', options);
 
   let changelog;
+  const changelogPath = path.join(process.env.GITHUB_WORKSPACE || process.cwd(), options.changelogPath);
 
-  let changelogPath = core.getInput('changelog') || 'CHANGELOG.md';
-
-  if (!path.isAbsolute(changelogPath)) {
-    const root = process.env.GITHUB_WORKSPACE || process.cwd();
-
-    changelogPath = path.join(root, changelogPath);
-  }
-
-  const ENCODING = 'UTF-8';
-
-  console.log('Action called');
   try {
     const changelogContent = await fs.readFile(changelogPath, ENCODING);
-
-    console.log('changelogContent', changelogContent);
 
     changelog = new Changelog(changelogContent);
   } catch (error) {
     console.log(error.message);
   }
 
-  if (options.getReleaseType) {
+  switch (options.action) {
+  case AVAILABLE_ACTIONS.GET_RELEASE_TYPE:
     core.setOutput('type', changelog.releaseType || 'No release type found');
-  }
+    break;
 
-  if (options.validate) {
+  case AVAILABLE_ACTIONS.GET_VERSION_CONTENT:
+    core.setOutput('content', changelog.getVersionContent(options.version));
+    break;
+
+  case AVAILABLE_ACTIONS.VALIDATE:
     changelog.validateUnreleased();
-    console.log('Changelog valid!');
-  }
+    break;
 
-  if (options.getVersionContent) {
-    core.setOutput('content', changelog.getVersionContent(options.getVersionContent));
-  }
-
-  if (options.release) {
-    const PRNumber = typeof options.release == 'boolean' ? null : options.release;
-
-    changelog.release(PRNumber);
+  case AVAILABLE_ACTIONS.RELEASE:
+    changelog.release(options.PRNumber);
     await fs.writeFile(changelogPath, changelog.toString(), ENCODING);
-  }
+    break;
 
-  if (options.cleanUnreleased) {
+  case AVAILABLE_ACTIONS.CLEAN_UNRELEASED:
     changelog.cleanUnreleased();
     await fs.writeFile(changelogPath, changelog.toString(), ENCODING);
+    break;
+
+  default:
+    console.log('please define one of valid action see: ');
+    break;
   }
 }

@@ -63,3 +63,14 @@ jobs:
       
       - name: Print Output
         run: cat CHANGELOG.md
+
+      # - name: Test Action validate
+      #   uses: ./
+      #   with:
+      #     action: 'validate'
+
+      # - name: Test Action validate
+      #   uses: ./
+      #   with:
+      #     action: 'get-version-content'
+      #     version: 0.1.0
