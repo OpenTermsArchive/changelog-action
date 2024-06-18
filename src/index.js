@@ -35,6 +35,8 @@ if (!path.isAbsolute(changelogPath)) {
 
 const ENCODING = 'UTF-8';
 
+console.log('Action called');
+
 try {
   const changelogContent = await fs.readFile(changelogPath, ENCODING);
 
@@ -45,6 +47,7 @@ try {
 
 if (options.validate) {
   changelog.validateUnreleased();
+  console.log('Changelog valid!');
 }
 
 if (options.getReleaseType) {
