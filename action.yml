@@ -1,26 +1,18 @@
 name: "Changelog Manager"
 description: "A command-line utility for managing the changelog file"
 inputs:
-  validate:
-    description: "Validate the changelog"
+  action:
+    description: "TODO"
+    required: true
+  version:
+    description: "TODO"
     required: false
-    default: "false"
-  release:
-    description: "Convert the Unreleased section into a new release"
+  changelogPath:
+    description: "TODO"
     required: false
-    default: ""
-  clean-unreleased:
-    description: "Remove the Unreleased section"
+  PRNumber:
+    description: "TODO"
     required: false
-    default: "false"
-  get-release-type:
-    description: "Get the release type of the Unreleased section"
-    required: false
-    default: "false"
-  get-version-content:
-    description: "Get the content of the given version in the changelog"
-    required: false
-    default: ""
 runs:
   using: 'node20'
   main: "src/main.js"

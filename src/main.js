@@ -18,24 +18,12 @@ export const AVAILABLE_ACTIONS = {
 };
 
 export async function run() {
-  // const options = {
-  //   validate: core.getBooleanInput('validate'),
-  //   getReleaseType: core.getBooleanInput('get-release-type'),
-  //   getVersionContent: core.getInput('get-version-content'),
-  //   release: core.getInput('release'),
-  //   cleanUnreleased: core.getBooleanInput('clean-unreleased'),
-  // };
-
   const options = {
     action: core.getInput('action'),
     version: core.getInput('version'),
     changelogPath: core.getInput('changelogPath') || 'CHANGELOG.md',
     PRNumber: core.getInput('PRNumber'),
   };
-
-  // Valider que laction existe bien
-
-  // console.log('options', options);
 
   let changelog;
   const changelogPath = path.join(process.env.GITHUB_WORKSPACE || process.cwd(), options.changelogPath);
@@ -72,7 +60,7 @@ export async function run() {
     break;
 
   default:
-    console.log('please define one of valid action see: ');
+    console.log('please define one of valid action see: TODO');
     break;
   }
 }
