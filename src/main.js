@@ -4,12 +4,10 @@ import fs from 'fs/promises';
 import path from 'path';
 
 import core from '@actions/core';
-// import github from '@actions/github';
-// import { program } from 'commander';
 
 import Changelog from './changelog.js';
 
-export default async function run() {
+export async function run() {
   const options = {
     validate: core.getBooleanInput('validate'),
     getReleaseType: core.getBooleanInput('get-release-type'),
