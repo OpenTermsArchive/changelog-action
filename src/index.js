@@ -47,6 +47,8 @@ console.log('Action called');
 try {
   const changelogContent = await fs.readFile(changelogPath, ENCODING);
 
+  console.log('changelogContent', changelogContent);
+
   changelog = new Changelog(changelogContent);
 } catch (error) {
   console.log(error.message);
