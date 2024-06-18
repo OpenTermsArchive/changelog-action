@@ -56,7 +56,7 @@ jobs:
         run: |
           git reset --hard 
 
-      - name: Test Action option clean-unreleased
+      - name: Test Action release
         uses: ./
         with:
           release: ${{ github.event.number }}
