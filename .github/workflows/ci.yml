@@ -1,76 +1,121 @@
-name: Continuous Integration
+name: Test Changelog Actions
 
-on:
-  pull_request:
-    branches:
-      - main
-  push:
-    branches:
-      - main
-
-permissions:
-  contents: read
+on: [push, pull_request]
 
 jobs:
-  test-action:
-    name: GitHub Actions Test
+  test-common-actions:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
-        id: checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Test Action option get-release-type
-        id: test-get-release-type
-        uses: ./
-        with:
-          get-release-type: true
-
-      - name: Print Output
-        run: echo "${{ steps.test-get-release-type.outputs.type }}"
       
-      - name: Test Action option get-version-content
-        id: test-get-version-content
-        uses: ./
+      - name: Test Check Functional Changes
+        uses: ./check-functional-changes
         with:
-          get-version-content: 0.1.0
-
-      - name: Print Output
-        run: echo "${{ steps.test-get-version-content.outputs.content }}"
-
-      - name: Test Action option validate
-        uses: ./
-        with:
-          validate: true
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
       
-      - name: Test Action option clean-unreleased
-        uses: ./
+      - name: Test Validate Changelog
+        uses: ./validate-changelog
         with:
-          clean-unreleased: true
-
-      - name: Print Output
-        run: cat CHANGELOG.md
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
       
-      - name: Remove changes
-        run: |
-          git reset --hard 
-
-      - name: Test Action release
-        uses: ./
+      - name: Test Changelog Manager - Validate
+        uses: ./changelog-manager
         with:
-          release: ${{ github.event.number }}
+          action: 'validate'
+          changelogPath: 'CHANGELOG.md'
       
-      - name: Print Output
-        run: cat CHANGELOG.md
+      - name: Test Changelog Manager - Get Release Type
+        uses: ./changelog-manager
+        with:
+          action: 'get-release-type'
+          changelogPath: 'CHANGELOG.md'
 
-      # - name: Test Action validate
-      #   uses: ./
-      #   with:
-      #     action: 'validate'
 
-      # - name: Test Action validate
-      #   uses: ./
-      #   with:
-      #     action: 'get-version-content'
-      #     version: 0.1.0
+# name: Continuous Integration
+
+# on:
+#   pull_request:
+#     branches:
+#       - main
+#   push:
+#     branches:
+#       - main
+
+# permissions:
+#   contents: read
+
+# jobs:
+#   test-action:
+#     name: GitHub Actions Test
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Checkout
+#         id: checkout
+#         uses: actions/checkout@v4
+
+#       - name: Test Action option get-release-type
+#         id: test-get-release-type
+#         uses: ./
+#         with:
+#           get-release-type: true
+
+#       - name: Print Output
+#         run: echo "${{ steps.test-get-release-type.outputs.type }}"
+      
+#       - name: Test Action option get-version-content
+#         id: test-get-version-content
+#         uses: ./
+#         with:
+#           get-version-content: 0.1.0
+
+#       - name: Print Output
+#         run: echo "${{ steps.test-get-version-content.outputs.content }}"
+
+#       - name: Test Action option validate
+#         uses: ./
+#         with:
+#           validate: true
+      
+#       - name: Test Action option clean-unreleased
+#         uses: ./
+#         with:
+#           clean-unreleased: true
+
+#       - name: Print Output
+#         run: cat CHANGELOG.md
+      
+#       - name: Remove changes
+#         run: |
+#           git reset --hard 
+
+#       - name: Test Action release
+#         uses: ./
+#         with:
+#           release: ${{ github.event.number }}
+      
+#       - name: Print Output
+#         run: cat CHANGELOG.md
+
+#       # - name: Test Action validate
+#       #   uses: ./
+#       #   with:
+#       #     action: 'validate'
+
+#       # - name: Test Action validate
+#       #   uses: ./
+#       #   with:
+#       #     action: 'get-version-content'
+#       #     version: 0.1.0
+
+#       # - name: Test Action validate
+#       #   uses: ./
+#       #   with:
+#       #     action: 'clean-unreleased'
+
+#       # - name: Test Action validate
+#       #   uses: ./
+#       #   with:
+#       #     action: 'release'
+#       #     pr-number: 101 (si necessaire ca a piori on peut l'obtenir direct)

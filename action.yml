@@ -1,18 +1,35 @@
-name: "Changelog Manager"
-description: "A command-line utility for managing the changelog file"
+name: "Common Changelog Action"
+description: "Validates the changelog and checks for functional changes"
 inputs:
-  action:
-    description: "TODO"
+  repo-token:
+    description: "Token to access the repository"
     required: true
-  version:
-    description: "TODO"
-    required: false
-  changelogPath:
-    description: "TODO"
-    required: false
-  PRNumber:
-    description: "TODO"
-    required: false
+outputs:
+  release_type:
+    description: "The release type extracted from changelog"
+  no_functional_changes:
+    description: "A boolean signaling that there are no functional changes in the changeset"
+
 runs:
-  using: 'node20'
-  main: "src/main.js"
+  using: "composite"
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Run Check Functional Changes
+      id: check-functional-changes
+      uses: ./check-functional-changes
+      with:
+        repo-token: ${{ inputs.repo-token }}
+    
+    - name: Validate Changelog
+      id: validate-changelog
+      if: ${{ steps.check-functional-changes.outputs.no_functional_changes != 'true' }}
+      uses: ./validate-changelog
+      with:
+        repo-token: ${{ inputs.repo-token }}
+
+    - name: Set outputs
+      run: |
+        echo "release_type=${{ steps.validate-changelog.outputs.release_type }}" >> $GITHUB_OUTPUT
+        echo "no_functional_changes=${{ steps.check-functional-changes.outputs.no_functional_changes }}" >> $GITHUB_OUTPUT

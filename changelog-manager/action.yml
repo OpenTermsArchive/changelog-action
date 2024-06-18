@@ -1,0 +1,18 @@
+name: "Changelog Manager"
+description: "A command-line utility for managing the changelog file"
+inputs:
+  action:
+    description: "TODO"
+    required: true
+  version:
+    description: "TODO"
+    required: false
+  changelogPath:
+    description: "TODO"
+    required: false
+  PRNumber:
+    description: "TODO"
+    required: false
+runs:
+  using: 'node20'
+  main: "src/main.js"
