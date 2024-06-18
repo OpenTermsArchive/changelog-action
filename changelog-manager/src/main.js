@@ -38,6 +38,7 @@ export async function run() {
 
   switch (options.action) {
   case AVAILABLE_ACTIONS.GET_RELEASE_TYPE:
+    console.log('changelog.releaseType', changelog.releaseType);
     core.setOutput('type', changelog.releaseType || 'No release type found');
     break;
 
