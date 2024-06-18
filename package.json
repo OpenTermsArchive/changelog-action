@@ -8,7 +8,9 @@
     "start": "node index.js"
   },
   "dependencies": {
-    "commander": "^9.4.1"
+    "commander": "^9.4.1",
+    "semver": "^7.6.0",
+    "keep-a-changelog": "^2.5.3"
   },
   "devDependencies": {},
   "author": "Your Name",
