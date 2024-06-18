@@ -65,3 +65,7 @@ export async function run() {
     break;
   }
 }
+
+run().catch(err => {
+  core.setFailed(err.message);
+});

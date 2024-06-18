@@ -13,6 +13,11 @@ inputs:
   PRNumber:
     description: "TODO"
     required: false
+outputs:
+  type:
+    description: "The release type extracted from changelog"
+  content:
+    description: "The content of the specified version from the changelog"
 runs:
   using: 'node20'
   main: "src/main.js"
