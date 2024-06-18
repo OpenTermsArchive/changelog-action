@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "A GitHub Action to manage changelogs for Node.js applications",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "node index.js"
   },
