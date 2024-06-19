@@ -6,16 +6,16 @@ import ChangelogValidationError from './changelogValidationError.js';
 export default class Changelog {
   static NO_CODE_CHANGES_REGEX = /^_No code changes were made in this release(.+)_$/m;
   static FUNDER_REGEX = /^> Development of this release was (?:supported|made on a volunteer basis) by (.+)\.$/m;
-  static UNRELEASED_REGEX = /## Unreleased[ ]+\[(major|minor|patch)\]/i;
+  static UNRELEASED_REGEX = /## Unreleased[ ]+\[(major|minor|patch|no-release)\]/i;
   static CHANGESET_LINK_REGEX = /^_Full changeset and discussions: (.+)._$/m;
-  static CHANGESET_LINK_TEMPLATE = PRNumber => `_Full changeset and discussions: [#${PRNumber}](https://github.com/OpenTermsArchive/engine/pull/${PRNumber})._`;
   static CHANGELOG_INTRO = 'All changes that impact users of this module are documented in this file, in the [Common Changelog](https://common-changelog.org) format with some additional specifications defined in the CONTRIBUTING file. This codebase adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).';
 
-  constructor(rawContent) {
+  constructor(rawContent, repository) {
     this.rawContent = rawContent;
     this.changelog = keepAChangelogParser(this.rawContent);
     this.changelog.description = Changelog.CHANGELOG_INTRO;
     this.changelog.format = 'markdownlint';
+    this.CHANGESET_LINK_TEMPLATE = PRNumber => `_Full changeset and discussions: [#${PRNumber}](https://github.com/${repository}/pull/${PRNumber})._`;
     this.releaseType = this.extractReleaseType();
   }
 
@@ -52,6 +52,12 @@ export default class Changelog {
       throw new Error('Missing "Unreleased" section');
     }
 
+    if (this.releaseType == 'no-release') {
+      this.cleanUnreleased();
+
+      return {};
+    }
+
     const latestVersion = semver.maxSatisfying(this.changelog.releases.map(release => release.version), '*');
     const newVersion = semver.inc(latestVersion, this.releaseType);
 
@@ -59,8 +65,13 @@ export default class Changelog {
     unreleased.date = new Date();
 
     if (PRNumber && !Changelog.CHANGESET_LINK_REGEX.test(unreleased.description)) {
-      unreleased.description = `${Changelog.CHANGESET_LINK_TEMPLATE(PRNumber)}\n\n${unreleased.description}`;
+      unreleased.description = `${this.CHANGESET_LINK_TEMPLATE(PRNumber)}\n\n${unreleased.description}`;
     }
+
+    return {
+      version: newVersion,
+      content: this.getVersionContent(newVersion),
+    };
   }
 
   validateUnreleased() {
@@ -73,15 +84,21 @@ export default class Changelog {
     }
 
     if (!this.releaseType) {
-      errors.push(new Error('Invalid or missing release type for "Unreleased" section. Please ensure the section contains a valid release type (major, minor, or patch)'));
+      errors.push(new Error('Invalid or missing release type for "Unreleased" section. Please ensure the section contains a valid release type (major, minor, patch or no-release)'));
     }
 
-    if (!Changelog.FUNDER_REGEX.test(unreleased.description)) {
-      errors.push(new Error('Missing funder in the "Unreleased" section'));
-    }
+    if (this.releaseType == 'no-release') {
+      if (!Changelog.NO_CODE_CHANGES_REGEX.test(unreleased.description)) {
+        errors.push(new Error('Missing no release signature'));
+      }
+    } else {
+      if (!Changelog.FUNDER_REGEX.test(unreleased.description)) {
+        errors.push(new Error('Missing funder in the "Unreleased" section'));
+      }
 
-    if (!Changelog.NO_CODE_CHANGES_REGEX.test(unreleased.description) && (!unreleased.changes || Array.from(unreleased.changes.values()).every(change => !change.length))) {
-      errors.push(new Error('Missing or malformed changes in the "Unreleased" section'));
+      if (!unreleased.changes || Array.from(unreleased.changes.values()).every(change => !change.length)) {
+        errors.push(new Error('Missing or malformed changes in the "Unreleased" section'));
+      }
     }
 
     if (errors.length) {
