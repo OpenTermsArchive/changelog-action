@@ -13,8 +13,6 @@ jobs:
       - name: Test Validation
         id: validate
         uses: ./validate
-        with:
-          path: ./src/fixtures/changelog.md
 
       - name: Print validation output
         run: echo "${{ steps.validate.outputs.release-type }}"
@@ -28,8 +26,6 @@ jobs:
       - name: Test Release
         id: release
         uses: ./release
-        with:
-          path: ./src/fixtures/changelog.md
 
       - name: Print release output
         run: |

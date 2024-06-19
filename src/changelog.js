@@ -4,6 +4,7 @@ import semver from 'semver';
 import ChangelogValidationError from './changelogValidationError.js';
 
 export default class Changelog {
+  static INITIAL_VERSION = '0.0.0';
   static NO_CODE_CHANGES_REGEX = /^_No code changes were made in this release(.+)_$/m;
   static FUNDER_REGEX = /^> Development of this release was (?:supported|made on a volunteer basis) by (.+)\.$/m;
   static UNRELEASED_REGEX = /## Unreleased[ ]+\[(major|minor|patch|no-release)\]/i;
@@ -58,7 +59,8 @@ export default class Changelog {
       return {};
     }
 
-    const latestVersion = semver.maxSatisfying(this.changelog.releases.map(release => release.version), '*');
+    const latestVersion = semver.maxSatisfying(this.changelog.releases.map(release => release.version), '*') || Changelog.INITIAL_VERSION;
+
     const newVersion = semver.inc(latestVersion, this.releaseType);
 
     unreleased.setVersion(newVersion);
