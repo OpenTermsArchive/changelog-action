@@ -94,7 +94,7 @@ jobs:
         run: |
           git add "package.json" "package-lock.json" "CHANGELOG.md"
           git commit -m "Release ${{ steps.release-changelog.outputs.version }}"
-          git tag ${{ steps.release-changelog.outputs.version }}
+          git tag v${{ steps.release-changelog.outputs.version }}
 
       - name: Push changes to repository
         run: git push origin && git push --tags
@@ -102,7 +102,7 @@ jobs:
       - name: Create GitHub release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ steps.release-changelog.outputs.version }}
+          tag_name: v${{ steps.release-changelog.outputs.version }}
           body: ${{ steps.release-changelog.outputs.content }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
