@@ -2,7 +2,7 @@
 
 All changes that impact users of this module are documented in this file, in the [Common Changelog](https://common-changelog.org) format with some additional specifications defined in the CONTRIBUTING file. This codebase adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased [minor]
+## 0.1.0 - 2024-06-19
 
 _Full changeset and discussions: [#3](https://github.com/OpenTermsArchive/changelog-action/pull/3)._
 
