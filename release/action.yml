@@ -1,0 +1,14 @@
+name: "Release Changelog"
+description: "Release the changelog and extract the version and content of the release"
+inputs:
+  path:
+    description: "Path to the changelog file. Defaults to './CHANGELOG.md' if not specified."
+    required: false
+outputs:
+  version:
+    description: "The version number extracted from the changelog"
+  content:
+    description: "The content of the release extracted from the changelog"
+runs:
+  using: "node20"
+  main: "index.js"
