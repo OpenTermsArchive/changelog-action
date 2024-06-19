@@ -1,0 +1,21 @@
+name: Changelog
+
+on:
+  pull_request:
+  workflow_call:
+    outputs:
+      release-type:
+        description: The release type extracted from changelog
+        value: ${{ jobs.validate_changelog.outputs.release-type }}
+
+jobs:
+  validate_changelog:
+    runs-on: [ ubuntu-latest ]
+    outputs:
+      release-type: ${{ steps.validate-changelog.outputs.release-type }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate changelog
+        id: validate-changelog
+        uses: ./validate

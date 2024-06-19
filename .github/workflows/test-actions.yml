@@ -1,6 +1,7 @@
 name: Test local actions
 
-on: [push, pull_request]
+on:
+  pull_request:
 
 jobs:
   test-validation:
