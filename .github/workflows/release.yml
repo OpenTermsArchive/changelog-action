@@ -36,7 +36,7 @@ jobs:
       - name: Commit CHANGELOG.md and package.json changes and create tag
         run: |
           git add "package.json" "package-lock.json" "CHANGELOG.md"
-          git commit -m "Release ${{ steps.release-changelog.outputs.version }}"
+          git commit -m "Release v${{ steps.release-changelog.outputs.version }}"
           git tag v${{ steps.release-changelog.outputs.version }}
 
       - name: Push changes to repository

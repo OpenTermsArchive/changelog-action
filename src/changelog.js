@@ -5,7 +5,7 @@ import ChangelogValidationError from './changelogValidationError.js';
 
 export default class Changelog {
   static INITIAL_VERSION = '0.0.0';
-  static NO_CODE_CHANGES_REGEX = /^_No code changes were made in this release(.+)_$/m;
+  static NO_CODE_CHANGES_REGEX = /^_Modifications made in this changeset do not add, remove or alter any behavior, dependency, API or functionality of the software. They only change non-functional parts of the repository, such as the README file or CI workflows._$/m;
   static FUNDER_REGEX = /^> Development of this release was (?:supported|made on a volunteer basis) by (.+)\.$/m;
   static UNRELEASED_REGEX = /## Unreleased[ ]+\[(major|minor|patch|no-release)\]/i;
   static CHANGESET_LINK_REGEX = /^_Full changeset and discussions: (.+)._$/m;
