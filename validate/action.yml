@@ -1,0 +1,12 @@
+name: "Validate Changelog"
+description: "Validate the changelog and extract the release type"
+inputs:
+  path:
+    description: "Path to the changelog file. Defaults to './CHANGELOG.md' if not specified."
+    required: false
+outputs:
+  release-type:
+    description: "The release type extracted from changelog"
+runs:
+  using: "node20"
+  main: "index.js"
