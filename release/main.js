@@ -10,7 +10,10 @@ import Changelog from '../src/changelog.js';
 const ENCODING = 'UTF-8';
 
 export async function run() {
-  const options = { path: core.getInput('path') || 'CHANGELOG.md' };
+  const options = {
+    path: core.getInput('path') || 'CHANGELOG.md',
+    PRNumber: core.getInput('pull-request-number'),
+  };
 
   let changelog;
   const changelogPath = path.join(process.env.GITHUB_WORKSPACE || process.cwd(), options.path);
