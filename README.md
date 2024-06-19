@@ -132,7 +132,6 @@ jobs:
         run: |
           git commit -m "Clean changelog" CHANGELOG.md
           git push origin
-
 ```
 
 #### Inputs
@@ -147,6 +146,28 @@ jobs:
 |------|-------------|
 | version | The version number extracted from the changelog |
 | content | The content of the release extracted from the changelog |
+
+## Expected Changelog Format
+
+To ensure these actions work correctly, follow this changelog format when opening a pull request:
+
+### Changes that impact users
+
+Document all user-impacting changes in the `CHANGELOG.md` file, following the [Common Changelog](https://common-changelog.org) format with the following additional specification:
+
+- The `Unreleased` section must include a tag specifying the release type using SemVer terms: `[patch]`, `[minor]`, or `[major]`. For example: `## Unreleased [minor]`.
+
+### Changes that do not impact users
+
+For non-functional changes that do not impact users:
+
+Add the following content to the changelog:
+
+```plaintext
+## Unreleased [no-release]
+
+_Modifications made in this changeset do not add, remove or alter any behavior, dependency, API or functionality of the software. They only change non-functional parts of the repository, such as the README file or CI workflows._
+```
 
 ## License
 
