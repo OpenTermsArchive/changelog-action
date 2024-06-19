@@ -1,0 +1,36 @@
+name: Test local actions
+
+on: [push, pull_request]
+
+jobs:
+  test-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Test Validation
+        id: validate
+        uses: ./validate
+        with:
+          path: ./src/fixtures/changelog.md
+
+      - name: Print validation output
+        run: echo "${{ steps.validate.outputs.release-type }}"
+
+  test-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Test Release
+        id: release
+        uses: ./release
+        with:
+          path: ./src/fixtures/changelog.md
+
+      - name: Print release output
+        run: |
+          echo "${{ steps.release.outputs.version }}" &&
+          echo "${{ steps.release.outputs.content }}"
