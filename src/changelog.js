@@ -52,6 +52,12 @@ export default class Changelog {
       throw new Error('Missing "Unreleased" section');
     }
 
+    if (this.releaseType == 'no-release') {
+      this.cleanUnreleased();
+
+      return {};
+    }
+
     const latestVersion = semver.maxSatisfying(this.changelog.releases.map(release => release.version), '*');
     const newVersion = semver.inc(latestVersion, this.releaseType);
 
@@ -61,6 +67,11 @@ export default class Changelog {
     if (PRNumber && !Changelog.CHANGESET_LINK_REGEX.test(unreleased.description)) {
       unreleased.description = `${Changelog.CHANGESET_LINK_TEMPLATE(PRNumber)}\n\n${unreleased.description}`;
     }
+
+    return {
+      version: newVersion,
+      content: this.getVersionContent(newVersion),
+    };
   }
 
   validateUnreleased() {

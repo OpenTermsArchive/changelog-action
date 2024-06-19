@@ -1,0 +1,17 @@
+name: "Release Changelog"
+description: ""
+inputs:
+  path:
+    description: ""
+    required: false
+  pull-request-number:
+    description: ""
+    required: false
+outputs:
+  version:
+    description: ""
+  content:
+    description: ""
+runs:
+  using: 'node20'
+  main: "main.js"

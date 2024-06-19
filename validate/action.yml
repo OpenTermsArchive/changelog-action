@@ -1,0 +1,12 @@
+name: "Validate Changelog"
+description: ""
+inputs:
+  path:
+    description: ""
+    required: false
+outputs:
+  release-type:
+    description: "The release type extracted from changelog"
+runs:
+  using: 'node20'
+  main: "main.js"
