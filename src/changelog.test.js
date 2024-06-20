@@ -168,12 +168,6 @@ _Full changeset and discussions: [#122](https://github.com/owner/repo/pull/122).
       });
     });
 
-    context('when custom intro is provided', () => {
-      it('uses the custom intro in the changelog', () => {
-        const customIntro = 'This is a custom changelog intro.';
-
-        changelog = new Changelog({ ...changelogOptions('changelog.md'), intro: customIntro });
-        expect(changelog.changelog.description).to.equal(customIntro);
       });
     });
 

@@ -13,13 +13,11 @@ export default class Changelog {
   static UNRELEASED_REGEX = new RegExp(`## Unreleased[ ]+\\[(major|minor|patch|${Changelog.NO_RELEASE_TAG})\\]`, 'i');
   static NO_RELEASE_SIGNATURE_REGEX = /^_Modifications made in this changeset do not add, remove or alter any behavior, dependency, API or functionality of the software. They only change non-functional parts of the repository, such as the README file or CI workflows._$/m;
   static FUNDER_REGEX = /^> Development of this release was (?:supported|made on a volunteer basis) by (.+)\.$/m;
-  static INTRO = 'All changes that impact users of this module are documented in this file, in the [Common Changelog](https://common-changelog.org) format with some additional specifications defined in the CONTRIBUTING file. This codebase adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).';
 
   constructor({ changelogPath, repository, noReleaseSignatureRegex, funderRegex, intro, changesetLinkTemplate, changesetLinkRegex }) {
     this.rawContent = fs.readFileSync(changelogPath, ENCODING);
     this.changelog = keepAChangelogParser(this.rawContent);
     this.changelogPath = changelogPath;
-    this.changelog.description = intro || Changelog.INTRO;
     this.changelog.format = 'markdownlint';
     this.noReleaseSignatureRegex = noReleaseSignatureRegex || Changelog.NO_RELEASE_SIGNATURE_REGEX;
     this.funderRegex = funderRegex || Changelog.FUNDER_REGEX;
