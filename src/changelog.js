@@ -1,7 +1,11 @@
+import fs from 'fs';
+
 import { parser as keepAChangelogParser } from 'keep-a-changelog';
 import semver from 'semver';
 
 import ChangelogValidationError from './changelogValidationError.js';
+
+const ENCODING = 'UTF-8';
 
 export default class Changelog {
   static INITIAL_VERSION = '0.0.0';
@@ -11,8 +15,8 @@ export default class Changelog {
   static CHANGESET_LINK_REGEX = /^_Full changeset and discussions: (.+)._$/m;
   static CHANGELOG_INTRO = 'All changes that impact users of this module are documented in this file, in the [Common Changelog](https://common-changelog.org) format with some additional specifications defined in the CONTRIBUTING file. This codebase adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).';
 
-  constructor(rawContent, repository) {
-    this.rawContent = rawContent;
+  constructor({ changelogPath, repository, noReleaseSignatureRegex, funderRegex, intro, changesetLinkTemplate, changesetLinkRegex }) {
+    this.rawContent = fs.readFileSync(changelogPath, ENCODING);
     this.changelog = keepAChangelogParser(this.rawContent);
     this.changelog.description = Changelog.CHANGELOG_INTRO;
     this.changelog.format = 'markdownlint';
