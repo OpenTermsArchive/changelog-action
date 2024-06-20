@@ -2,10 +2,6 @@
 
 All changes that impact users of this module are documented in this file, in the [Common Changelog](https://common-changelog.org) format with some additional specifications defined in the CONTRIBUTING file. This codebase adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased [no-release]
-
-_Modifications made in this changeset do not add, remove or alter any behavior, dependency, API or functionality of the software. They only change non-functional parts of the repository, such as the README file or CI workflows._
-
 ## 0.2.0 - 2024-06-19
 
 _Full changeset and discussions: [#5](https://github.com/OpenTermsArchive/changelog-action/pull/5)._
