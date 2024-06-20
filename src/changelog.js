@@ -19,6 +19,7 @@ export default class Changelog {
   constructor({ changelogPath, repository, noReleaseSignatureRegex, funderRegex, intro, changesetLinkTemplate, changesetLinkRegex }) {
     this.rawContent = fs.readFileSync(changelogPath, ENCODING);
     this.changelog = keepAChangelogParser(this.rawContent);
+    this.changelogPath = changelogPath;
     this.changelog.description = intro || Changelog.INTRO;
     this.changelog.format = 'markdownlint';
     this.changesetLinkTemplate = pullRequestNumber => (changesetLinkTemplate || Changelog.CHANGESET_LINK_TEMPLATE).replaceAll('REPOSITORY', repository).replaceAll('PULL_REQUEST_NUMBER', pullRequestNumber);
@@ -38,12 +39,6 @@ export default class Changelog {
     return null;
   }
 
-  cleanUnreleased() {
-    const index = this.changelog.releases.findIndex(release => !release.version);
-
-    this.changelog.releases.splice(index, 1);
-  }
-
   getVersionContent(version) {
     const release = this.changelog.findRelease(version);
 
@@ -61,26 +56,32 @@ export default class Changelog {
       throw new Error('Missing "Unreleased" section');
     }
 
+    let version;
+
     if (this.releaseType == 'no-release') {
-      this.cleanUnreleased();
+      const index = this.changelog.releases.findIndex(release => !release.version);
 
-      return {};
+      this.changelog.releases.splice(index, 1);
+    } else {
+      const latestVersion = semver.maxSatisfying(this.changelog.releases.map(release => release.version), '*') || Changelog.INITIAL_VERSION;
+
+      version = semver.inc(latestVersion, this.releaseType);
+
+      unreleased.setVersion(version);
+      unreleased.date = new Date();
+
+      if (pullRequestNumber && !unreleased.description.includes(this.changesetLinkTemplate(pullRequestNumber))) {
+        unreleased.description = `${this.changesetLinkTemplate(pullRequestNumber)}\n\n${unreleased.description}`;
+      }
     }
 
-    const latestVersion = semver.maxSatisfying(this.changelog.releases.map(release => release.version), '*') || Changelog.INITIAL_VERSION;
+    const content = this.toString();
 
-    const newVersion = semver.inc(latestVersion, this.releaseType);
-
-    unreleased.setVersion(newVersion);
-    unreleased.date = new Date();
-
-    if (pullRequestNumber && !unreleased.description.includes(this.changesetLinkTemplate(pullRequestNumber))) {
-      unreleased.description = `${this.changesetLinkTemplate(pullRequestNumber)}\n\n${unreleased.description}`;
-    }
+    fs.writeFileSync(this.changelogPath, content, ENCODING);
 
     return {
-      version: newVersion,
-      content: this.getVersionContent(newVersion),
+      version,
+      content,
     };
   }
 

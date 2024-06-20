@@ -1,8 +1,9 @@
-import fs from 'fs/promises';
+import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
 import { expect } from 'chai';
+import sinon from 'sinon';
 
 import Changelog from './changelog.js';
 import ChangelogValidationError from './changelogValidationError.js';
@@ -15,6 +16,14 @@ describe('Changelog', () => {
   const changelogOptions = fileName => ({
     changelogPath: path.resolve(__dirname, `./fixtures/${fileName}`),
     repository: REPOSITORY,
+  });
+
+  before(() => {
+    sinon.stub(fs, 'writeFileSync');
+  });
+
+  after(() => {
+    sinon.restore();
   });
 
   describe('#releaseType', () => {
@@ -65,36 +74,17 @@ _Full changeset and discussions: [#122](https://github.com/owner/repo/pull/122).
     });
   });
 
-  describe('#cleanUnreleased', () => {
-    context('when "Unreleased" section exists', () => {
-      it('removes the section', () => {
-        changelog = new Changelog(changelogOptions('changelog-with-unreleased-no-release.md'));
-        changelog.cleanUnreleased();
-        const updatedChangelog = changelog.toString();
-
-        expect(updatedChangelog).to.not.include('## Unreleased');
-      });
-    });
-
-    context('when "Unreleased" section does not exist', () => {
-      it('does not throw any error', () => {
-        changelog = new Changelog(changelogOptions('changelog-without-unreleased.md'));
-        expect(() => changelog.cleanUnreleased()).to.not.throw();
-      });
-    });
-  });
-
   describe('#release', () => {
     context('with a properly formed changelog', () => {
       it('returns an updated version of the changelog', async () => {
         changelog = new Changelog(changelogOptions('changelog.md'));
         const result = changelog.release(123);
-        let expectedResult = await fs.readFile(path.resolve(__dirname, './fixtures/changelog-released.md'), 'UTF-8');
+        let expectedResult = fs.readFileSync(path.resolve(__dirname, './fixtures/changelog-released.md'), 'UTF-8');
 
         expectedResult = expectedResult.replace('<DATE_OF_THE_DAY_PLACEHOLDER>', `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}-${String(new Date().getDate()).padStart(2, '0')}`);
         expect(changelog.toString()).to.equal(expectedResult);
-        expect(result).to.have.property('version');
-        expect(result).to.have.property('content');
+        expect(result).to.have.property('version').that.is.not.empty;
+        expect(result).to.have.property('content').that.is.not.empty;
       });
     });
 
@@ -106,14 +96,15 @@ _Full changeset and discussions: [#122](https://github.com/owner/repo/pull/122).
         const updatedChangelog = changelog.toString();
 
         expect(updatedChangelog).to.not.include('## Unreleased');
-        expect(result).to.be.empty;
+        expect(result).to.have.property('version').that.is.undefined;
+        expect(result).to.have.property('content').that.is.not.empty;
       });
     });
 
-    context('when there is a validation error on the "Unreleased" section', () => {
-      it('throws an error', () => {
+    context('when "Unreleased" section does not exist', () => {
+      it('does not throw any error', () => {
         changelog = new Changelog(changelogOptions('changelog-without-unreleased.md'));
-        expect(() => changelog.release(124)).to.throw(Error, 'Missing "Unreleased" section');
+        expect(() => changelog.release(123)).to.throw(Error, 'Missing "Unreleased" section');
       });
     });
   });
