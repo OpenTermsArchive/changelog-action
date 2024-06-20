@@ -12,11 +12,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 describe('Changelog', () => {
   let changelog;
-  const REPOSITORY = 'owner/repo';
-  const changelogOptions = fileName => ({
-    changelogPath: path.resolve(__dirname, `./fixtures/${fileName}`),
-    repository: REPOSITORY,
-  });
+  const changelogOptions = fileName => ({ changelogPath: path.resolve(__dirname, `./fixtures/${fileName}`) });
 
   before(() => {
     sinon.stub(fs, 'writeFileSync');
@@ -78,8 +74,8 @@ _Full changeset and discussions: [#122](https://github.com/owner/repo/pull/122).
     context('with a properly formed changelog', () => {
       it('returns an updated version of the changelog', async () => {
         changelog = new Changelog(changelogOptions('changelog.md'));
-        const result = changelog.release(123);
         let expectedResult = fs.readFileSync(path.resolve(__dirname, './fixtures/changelog-released.md'), 'UTF-8');
+        const result = changelog.release('Full changeset and discussions: [#123](https://github.com/owner/repo/pull/123).');
 
         expectedResult = expectedResult.replace('<DATE_OF_THE_DAY_PLACEHOLDER>', `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}-${String(new Date().getDate()).padStart(2, '0')}`);
         expect(changelog.toString()).to.equal(expectedResult);
@@ -127,7 +123,7 @@ _Full changeset and discussions: [#122](https://github.com/owner/repo/pull/122).
     context('when release type is invalid or missing', () => {
       it('throws a ChangelogValidationError error with proper message', () => {
         changelog = new Changelog(changelogOptions('changelog-with-unreleased-malformed.md'));
-        expect(() => changelog.validateUnreleased()).to.throw(ChangelogValidationError, 'Invalid or missing release type for "Unreleased" section. Please ensure the section contains a valid release type (major, minor, patch or no-release)');
+        expect(() => changelog.validateUnreleased()).to.throw(ChangelogValidationError, `Invalid or missing release type for "Unreleased" section. Please ensure the section contains a valid release type (major, minor, patch or ${Changelog.NO_RELEASE_TAG})`);
       });
     });
 
