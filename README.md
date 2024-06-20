@@ -34,7 +34,7 @@ jobs:
 
       - name: Validate changelog
         id: validate-changelog
-        uses: OpenTermsArchive/manage-changelog/validate@v1
+        uses: OpenTermsArchive/manage-changelog/validate@v0.2.0
 ```
 
 #### Inputs
@@ -85,7 +85,7 @@ jobs:
 
       - name: Release changelog
         id: release-changelog
-        uses: OpenTermsArchive/manage-changelog/release@v1
+        uses: OpenTermsArchive/manage-changelog/release@v0.2.0
 
       - name: Bump package version
         run: npm --no-git-tag-version version ${{ steps.release-changelog.outputs.version }}
