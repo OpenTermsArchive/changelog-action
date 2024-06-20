@@ -11,9 +11,10 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 describe('Changelog', () => {
   let changelog;
+  const REPOSITORY = 'owner/repo';
   const changelogOptions = fileName => ({
     changelogPath: path.resolve(__dirname, `./fixtures/${fileName}`),
-    repository: 'owner/repo',
+    repository: REPOSITORY,
   });
 
   describe('#releaseType', () => {
@@ -47,7 +48,7 @@ describe('Changelog', () => {
 
         expect(versionContent).to.equal(`## 0.0.1 - 2024-02-20
 
-_Full changeset and discussions: #122._
+_Full changeset and discussions: [#122](https://github.com/owner/repo/pull/122)._
 
 > Development of this release was made on a volunteer basis by a contributor.
 
@@ -157,6 +158,47 @@ _Full changeset and discussions: #122._
       it('throws a ChangelogValidationError error with proper message', () => {
         changelog = new Changelog(changelogOptions('changelog-without-no-release-signature.md'));
         expect(() => changelog.validateUnreleased()).to.throw(ChangelogValidationError, 'Missing no release signature');
+      });
+    });
+  });
+
+  describe('Custom regex and template options', () => {
+    context('when custom noReleaseSignatureRegex is provided', () => {
+      it('uses the custom regex for validation', () => {
+        const customNoReleaseSignatureRegex = /^_No functional changes made._$/m;
+
+        changelog = new Changelog({ ...changelogOptions('changelog-with-custom-no-release-signature.md'), noReleaseSignatureRegex: customNoReleaseSignatureRegex });
+        expect(() => changelog.validateUnreleased()).to.not.throw();
+      });
+    });
+
+    context('when custom funderRegex is provided', () => {
+      it('uses the custom regex for validation', () => {
+        const customFunderRegex = /^> This release was sponsored by (.+)\.$/m;
+
+        changelog = new Changelog({ ...changelogOptions('changelog-with-custom-funder.md'), funderRegex: customFunderRegex });
+        expect(() => changelog.validateUnreleased()).to.not.throw();
+      });
+    });
+
+    context('when custom intro is provided', () => {
+      it('uses the custom intro in the changelog', () => {
+        const customIntro = 'This is a custom changelog intro.';
+
+        changelog = new Changelog({ ...changelogOptions('changelog.md'), intro: customIntro });
+        expect(changelog.changelog.description).to.equal(customIntro);
+      });
+    });
+
+    context('when custom changesetLinkTemplate is provided', () => {
+      it('uses the custom template for generating changeset links', () => {
+        const customChangesetLinkTemplate = '_Changeset: [#PULL_REQUEST_NUMBER](https://REPOSITORY/pull/PULL_REQUEST_NUMBER)._';
+
+        changelog = new Changelog({ ...changelogOptions('changelog-without-changeset-link.md'), changesetLinkTemplate: customChangesetLinkTemplate });
+        const pullRequestNumber = 12;
+        const { content } = changelog.release(pullRequestNumber);
+
+        expect(content).to.include(`_Changeset: [#${pullRequestNumber}](https://${REPOSITORY}/pull/${pullRequestNumber})._`);
       });
     });
   });
