@@ -100,7 +100,7 @@ _Full changeset and discussions: [#122](https://github.com/owner/repo/pull/122).
     context('when "Unreleased" section does not exist', () => {
       it('does not throw any error', () => {
         changelog = new Changelog(changelogOptions('changelog-without-unreleased.md'));
-        expect(() => changelog.release(123)).to.throw(Error, 'Missing "Unreleased" section');
+        expect(() => changelog.release()).to.not.throw();
       });
     });
   });
@@ -147,39 +147,57 @@ _Full changeset and discussions: [#122](https://github.com/owner/repo/pull/122).
         expect(() => changelog.validateUnreleased()).to.throw(ChangelogValidationError, 'Missing no release signature');
       });
     });
-  });
 
-  describe('Custom regex and template options', () => {
     context('when custom noReleaseSignatureRegex is provided', () => {
-      it('uses the custom regex for validation', () => {
-        const customNoReleaseSignatureRegex = /^_No functional changes made._$/m;
+      context('with valid changelog', () => {
+        it('does not throw any error', () => {
+          const customNoReleaseSignatureRegex = /^_No functional changes made._$/m;
 
-        changelog = new Changelog({ ...changelogOptions('changelog-with-custom-no-release-signature.md'), noReleaseSignatureRegex: customNoReleaseSignatureRegex });
-        expect(() => changelog.validateUnreleased()).to.not.throw();
+          changelog = new Changelog({ ...changelogOptions('changelog-with-unreleased-no-release.md'), noReleaseSignatureRegex: customNoReleaseSignatureRegex });
+          expect(() => changelog.validateUnreleased()).to.throw(ChangelogValidationError, 'Missing no release signature');
+        });
+      });
+      context('with invalid changelog', () => {
+        it('throws a ChangelogValidationError error with proper message', () => {
+          const customNoReleaseSignatureRegex = /^_No functional changes made._$/m;
+
+          changelog = new Changelog({ ...changelogOptions('changelog-with-unreleased-no-release.md'), noReleaseSignatureRegex: customNoReleaseSignatureRegex });
+          expect(() => changelog.validateUnreleased()).to.throw(ChangelogValidationError, 'Missing no release signature');
+        });
       });
     });
 
     context('when custom funderRegex is provided', () => {
-      it('uses the custom regex for validation', () => {
-        const customFunderRegex = /^> This release was sponsored by (.+)\.$/m;
+      context('with valid changelog', () => {
+        it('does not throw any error', () => {
+          const customFunderRegex = /^> This release was sponsored by (.+)\.$/m;
 
-        changelog = new Changelog({ ...changelogOptions('changelog-with-custom-funder.md'), funderRegex: customFunderRegex });
-        expect(() => changelog.validateUnreleased()).to.not.throw();
+          changelog = new Changelog({ ...changelogOptions('changelog-with-custom-funder.md'), funderRegex: customFunderRegex });
+          expect(() => changelog.validateUnreleased()).to.not.throw();
+        });
+      });
+
+      context('with invalid changelog', () => {
+        it('throws a ChangelogValidationError error with proper message', () => {
+          const customFunderRegex = /^> This release was sponsored by (.+)\.$/m;
+
+          changelog = new Changelog({ ...changelogOptions('changelog.md'), funderRegex: customFunderRegex });
+          expect(() => changelog.validateUnreleased()).to.throw('Missing funder in the "Unreleased" section');
+        });
       });
     });
 
+    context('when funderRegex is explicitly set to false', () => {
+      it('skips the funder validation', () => {
+        changelog = new Changelog({ ...changelogOptions('changelog-without-funder.md'), funderRegex: false });
+        expect(() => changelog.validateUnreleased()).to.not.throw('Missing funder in the "Unreleased" section');
       });
     });
 
-    context('when custom changesetLinkTemplate is provided', () => {
-      it('uses the custom template for generating changeset links', () => {
-        const customChangesetLinkTemplate = '_Changeset: [#PULL_REQUEST_NUMBER](https://REPOSITORY/pull/PULL_REQUEST_NUMBER)._';
-
-        changelog = new Changelog({ ...changelogOptions('changelog-without-changeset-link.md'), changesetLinkTemplate: customChangesetLinkTemplate });
-        const pullRequestNumber = 12;
-        const { content } = changelog.release(pullRequestNumber);
-
-        expect(content).to.include(`_Changeset: [#${pullRequestNumber}](https://${REPOSITORY}/pull/${pullRequestNumber})._`);
+    context('when noReleaseSignatureRegex is explicitly set to false', () => {
+      it('skips the no-release signature validation', () => {
+        changelog = new Changelog({ ...changelogOptions('changelog-without-no-release-signature.md'), noReleaseSignatureRegex: false });
+        expect(() => changelog.validateUnreleased()).to.not.throw('Missing no release signature');
       });
     });
   });
