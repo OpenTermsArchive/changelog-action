@@ -22,7 +22,7 @@ on:
     outputs:
       release-type:
         description: The release type extracted from changelog
-        value: ${{ jobs.validate_changelog.outputs.release-type }}
+        value: ${{ jobs.validate-changelog.outputs.release-type }}
 
 jobs:
   validate_changelog:
@@ -83,16 +83,13 @@ jobs:
           git config --global user.name "Open Terms Archive Release Bot"
           git config --global user.email "release-bot@opentermsarchive.org"
 
-      - name: Release changelog
+      - name: Update changelog for release
         id: release-changelog
         uses: OpenTermsArchive/manage-changelog/release@v0.2.0
 
-      - name: Bump package version
-        run: npm --no-git-tag-version version ${{ steps.release-changelog.outputs.version }}
-
-      - name: Commit CHANGELOG.md and package.json changes and create tag
+      - name: Commit CHANGELOG.md changes and create tag
         run: |
-          git add "package.json" "package-lock.json" "CHANGELOG.md"
+          git add "CHANGELOG.md"
           git commit -m "Release ${{ steps.release-changelog.outputs.version }}"
           git tag v${{ steps.release-changelog.outputs.version }}
 
@@ -105,11 +102,6 @@ jobs:
           tag_name: v${{ steps.release-changelog.outputs.version }}
           body: ${{ steps.release-changelog.outputs.content }}
           token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Publish to NPM public repository
-        uses: JS-DevTools/npm-publish@v1
-        with:
-          token: ${{ secrets.NPMJS_ACCESS_TOKEN }}
 
   clean_changelog:
     if: needs.changelog.outputs.release-type == 'no-release'
@@ -125,10 +117,10 @@ jobs:
           git config --global user.name "Open Terms Archive Release Bot"
           git config --global user.email "release-bot@opentermsarchive.org"
 
-      - name: Release changelog
-        uses: OpenTermsArchive/manage-changelog/release@v1
+      - name: Update changelog for release
+        uses: OpenTermsArchive/manage-changelog/release@v0.2.0
 
-      - name: Erase unreleased information from changelog
+      - name: Save changelog
         run: |
           git commit -m "Clean changelog" CHANGELOG.md
           git push origin
