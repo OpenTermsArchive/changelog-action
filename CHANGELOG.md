@@ -2,6 +2,17 @@
 
 All changes that impact users of this module are documented in this file, in the [Common Changelog](https://common-changelog.org) format with some additional specifications defined in the CONTRIBUTING file. This codebase adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased [minor]
+
+> Development of this release was supported by the [French Ministry for Foreign Affairs](https://www.diplomatie.gouv.fr/fr/politique-etrangere-de-la-france/diplomatie-numerique/) through its ministerial [State Startups incubator](https://beta.gouv.fr/startups/open-terms-archive.html) under the aegis of the Ambassador for Digital Affairs.
+
+### Added
+
+- **Breaking:** Disable funders validation by default
+- Add `funders` option to the `validate` action, allowing users to enable, disable, or provide a custom JavaScript Regex for validation
+- Add `no-release-signature` option to the `validate` action, allowing users to enable, disable, or provide a custom JavaScript Regex for validation
+- Add `notice` option to the `release` action, allowing users to provide a custom release notice string
+
 ## 0.2.0 - 2024-06-19
 
 _Full changeset and discussions: [#5](https://github.com/OpenTermsArchive/changelog-action/pull/5)._
