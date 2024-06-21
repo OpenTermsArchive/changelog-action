@@ -130,9 +130,10 @@ jobs:
 
 #### Inputs
 
-| Name | Description               | Required | Default          |
-|------|---------------------------|----------|------------------|
-| path | Path to the changelog file| No       | `./CHANGELOG.md` |
+| Name   | Description                   | Required | Default             |
+|--------|-------------------------------|----------|---------------------|
+| path   | Path to the changelog file    | No       | `./CHANGELOG.md`    |
+| notice | Custom notice for the release | No       | `Full changeset and discussions: [#<pull_request_number>](<link_to_pull_request>)` |
 
 #### Outputs
 

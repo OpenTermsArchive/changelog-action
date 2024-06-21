@@ -59,7 +59,7 @@ jobs:
         uses: ./release
         with:
           path: ./src/fixtures/changelog.md
-          notice: "Changeset: [#${{ github.event.number }}](https://github.com/${{ github.event.repository.name }}/pull/${{github.event.number}})."
+          notice: "Changeset: [#${{ github.event.number }}](https://github.com/${{ github.repository }}/pull/${{github.event.number}})."
 
       - name: Print release outputed version
         run: echo "${{ steps.custom-notice-release.outputs.version }}"
