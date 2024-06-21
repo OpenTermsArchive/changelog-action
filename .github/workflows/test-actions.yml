@@ -9,10 +9,41 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      
-      - name: Test Validation
+    
+      - name: Test default value for funders validation
         id: validate
         uses: ./validate
+        with:
+          path: ./src/fixtures/changelog-without-funder.md
+      
+      - name: Test enabling funders validation
+        uses: ./validate
+        with:
+          path: ./src/fixtures/changelog.md
+          funders: true
+
+      - name: Test custom value for funders validation
+        uses: ./validate
+        with:
+          path: ./src/fixtures/changelog-with-custom-funder.md
+          funders: '/^> This release was sponsored by (.+)\.$/m'
+
+      - name: Test default value for no-release signature validation
+        uses: ./validate
+        with:
+          path: ./src/fixtures/changelog.md
+      
+      - name: Test disabling no-release signature validation
+        uses: ./validate
+        with:
+          path: ./src/fixtures/changelog.md
+          no-release-signature: FALSE
+
+      - name: Test custom value for no-release signature validation
+        uses: ./validate
+        with:
+          path: ./src/fixtures/changelog-with-custom-no-release-signature.md
+          no-release-signature: '/^_No functional changes made._$/m'
 
       - name: Print validation output
         run: echo "${{ steps.validate.outputs.release-type }}"
