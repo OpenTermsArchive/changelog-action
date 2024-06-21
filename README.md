@@ -34,22 +34,23 @@ jobs:
 
       - name: Validate changelog
         id: validate-changelog
-        uses: OpenTermsArchive/manage-changelog/validate@v0.2.0
+        uses: OpenTermsArchive/manage-changelog/validate@v0.4.0
 ```
 
 #### Inputs
 
-| Name                | Description                                                                                                                              | Required | Default             |
-|---------------------|------------------------------------------------------------------------------------------------------------------------------------------|----------|---------------------|
-| path                | Path to the changelog file                                                                                                               | No       | `./CHANGELOG.md`    |
-| funders             | A boolean or Regex string to identify funders in the Unreleased section. Set to `true` for default validation, `false` to disable, or provide a custom JavaScript Regex | No       | `false`             |
-| no-release-signature| A boolean or Regex string to identify the no-release signature in the Unreleased section. Set to `true` for default validation, `false` to disable, or provide a custom JavaScript Regex | No       | `true`              |
+| Name                   | Description                                                                                                                              | Default value            |
+|------------------------|------------------------------------------------------------------------------------------------------------------------------------------|--------------------------|
+| `path`                 | Path to the changelog file                                                                                                               | `./CHANGELOG.md`         |
+| `funders`              | A boolean or Regex string to identify funders in the Unreleased section. Set to `true` for default validation, `false` to disable, or provide a custom JavaScript Regex | `false` |
+| `no-release-signature` | A boolean or Regex string to identify the no-release signature in the Unreleased section. Set to `true` for default validation, `false` to disable, or provide a custom JavaScript Regex | `true` |
 
 #### Outputs
 
-| Name          | Description                              |
-|---------------|------------------------------------------|
-| release-type  | The release type extracted from the changelog |
+| Name            | Description                              |
+|-----------------|------------------------------------------|
+| `release-type`  | The release type extracted from the changelog. Possible values `major`, `minor`, `patch` or `no-release` |
+| `next-version`  | Upcoming version computed as a SemVer identifier (e.g. `0.2.0`, `1.0.0`…) |
 
 ### `OpenTermsArchive/manage-changelog/release`
 
@@ -77,70 +78,59 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Configure Git author
-        run: |
-          git config --global user.name "Open Terms Archive Release Bot"
-          git config --global user.email "release-bot@opentermsarchive.org"
 
       - name: Update changelog for release
         id: release-changelog
-        uses: OpenTermsArchive/manage-changelog/release@v0.2.0
+        uses: OpenTermsArchive/manage-changelog/release@v0.4.0
 
-      - name: Commit CHANGELOG.md changes and create tag
+      - name: Update repository
         run: |
+          git config user.name "Open Terms Archive Release Bot"
+          git config user.email "release-bot@opentermsarchive.org"
           git add "CHANGELOG.md"
-          git commit -m "Release ${{ steps.release-changelog.outputs.version }}"
+          git commit -m "Update changelog"
           git tag v${{ steps.release-changelog.outputs.version }}
-
-      - name: Push changes to repository
-        run: git push origin && git push --tags
+          git push origin 
+          git push --tags
 
       - name: Create GitHub release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.release-changelog.outputs.version }}
           body: ${{ steps.release-changelog.outputs.content }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
-  clean_changelog:
+  clean-changelog:
     if: needs.changelog.outputs.release-type == 'no-release'
     needs: [ changelog ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Configure Git author
-        run: |
-          git config --global user.name "Open Terms Archive Release Bot"
-          git config --global user.email "release-bot@opentermsarchive.org"
 
       - name: Update changelog for release
-        uses: OpenTermsArchive/manage-changelog/release@v0.2.0
+        uses: OpenTermsArchive/manage-changelog/release@v0.4.0
 
       - name: Save changelog
         run: |
+          git config user.name "Open Terms Archive Release Bot"
+          git config user.email "release-bot@opentermsarchive.org"
           git commit -m "Clean changelog" CHANGELOG.md
           git push origin
 ```
 
 #### Inputs
 
-| Name   | Description                   | Required | Default             |
-|--------|-------------------------------|----------|---------------------|
-| path   | Path to the changelog file    | No       | `./CHANGELOG.md`    |
-| notice | Custom notice for the release | No       | `Full changeset and discussions: [#<pull_request_number>](<link_to_pull_request>)` |
+| Name   | Description                     | Default value            |
+|--------|---------------------------------|--------------------------|
+| `path`   | Path to the changelog file    | `./CHANGELOG.md`         |
+| `notice` | Custom notice for the release | `Full changeset and discussions: [#<pull_request_number>](<link_to_pull_request>)` |
 
 #### Outputs
 
-| Name    | Description                               |
-|---------|-------------------------------------------|
-| version | The version number extracted from the changelog |
-| content | The content of the release extracted from the changelog |
+| Name      | Description                               |
+|-----------|-------------------------------------------|
+| `version` | The version number extracted from the changelog as a SemVer identifier (e.g. `0.2.0`, `1.0.0`…) |
+| `content` | The content of the release extracted from the changelog |
 
 ## Enforced format
 
