@@ -226,4 +226,27 @@ _Full changeset and discussions: [#123](https://github.com/owner/repo/pull/123).
       });
     });
   });
+
+  describe('#getNextVersion', () => {
+    context('with a properly formed "Unreleased" section', () => {
+      it('returns the computed next version', () => {
+        changelog = new Changelog(changelogOptions('changelog.md'));
+        expect(changelog.getNextVersion()).to.equal('1.0.0');
+      });
+    });
+
+    context('without "Unreleased" section', () => {
+      it('returns the current latest version', () => {
+        changelog = new Changelog(changelogOptions('changelog-without-unreleased.md'));
+        expect(changelog.getNextVersion()).to.equal(null);
+      });
+    });
+
+    context('with no-release "Unreleased" section', () => {
+      it('returns the current latest version', () => {
+        changelog = new Changelog(changelogOptions('changelog-with-unreleased-no-release.md'));
+        expect(changelog.getNextVersion()).to.equal('0.0.1');
+      });
+    });
+  });
 });

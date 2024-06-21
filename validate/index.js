@@ -21,8 +21,10 @@ export async function run() {
     noReleaseSignatureRegex: typeof options.noReleaseSignatureRegex === 'boolean' ? options.noReleaseSignatureRegex : parseRegexString(options.noReleaseSignatureRegex),
   });
 
-  core.setOutput('release-type', changelog.releaseType);
   changelog.validateUnreleased();
+
+  core.setOutput('next-version', changelog.nextVersion);
+  core.setOutput('release-type', changelog.releaseType);
 }
 
 run().catch(error => {

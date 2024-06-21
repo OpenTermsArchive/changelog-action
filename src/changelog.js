@@ -25,6 +25,7 @@ export default class Changelog {
     this.changelog.format = 'markdownlint';
 
     this.releaseType = this.extractReleaseType();
+    this.nextVersion = this.getNextVersion();
   }
 
   extractReleaseType() {
@@ -65,9 +66,7 @@ export default class Changelog {
 
       this.changelog.releases.splice(index, 1);
     } else {
-      const latestVersion = semver.maxSatisfying(this.changelog.releases.map(release => release.version), '*') || Changelog.INITIAL_VERSION;
-
-      version = semver.inc(latestVersion, this.releaseType);
+      version = this.nextVersion;
 
       unreleased.setVersion(version);
       unreleased.date = new Date();
@@ -117,6 +116,12 @@ export default class Changelog {
     if (errors.length) {
       throw new ChangelogValidationError(errors);
     }
+  }
+
+  getNextVersion() {
+    const latestVersion = semver.maxSatisfying(this.changelog.releases.map(release => release.version), '*') || Changelog.INITIAL_VERSION;
+
+    return this.releaseType != Changelog.NO_RELEASE_TAG ? semver.inc(latestVersion, this.releaseType) : latestVersion;
   }
 
   toString() {
