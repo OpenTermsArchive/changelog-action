@@ -25,6 +25,7 @@ export default class Changelog {
     this.changelog.format = 'markdownlint';
 
     this.releaseType = this.extractReleaseType();
+    this.nextVersion = this.getNextVersion();
   }
 
   extractReleaseType() {
@@ -58,15 +59,14 @@ export default class Changelog {
     }
 
     let version;
+    let content;
 
     if (this.releaseType == Changelog.NO_RELEASE_TAG) {
       const index = this.changelog.releases.findIndex(release => !release.version);
 
       this.changelog.releases.splice(index, 1);
     } else {
-      const latestVersion = semver.maxSatisfying(this.changelog.releases.map(release => release.version), '*') || Changelog.INITIAL_VERSION;
-
-      version = semver.inc(latestVersion, this.releaseType);
+      version = this.nextVersion;
 
       unreleased.setVersion(version);
       unreleased.date = new Date();
@@ -74,11 +74,11 @@ export default class Changelog {
       if (notice) {
         unreleased.description = `_${notice}_\n\n${unreleased.description}`;
       }
+
+      content = unreleased.toString(this.changelog);
     }
 
-    const content = this.toString();
-
-    fs.writeFileSync(this.changelogPath, content, ENCODING);
+    fs.writeFileSync(this.changelogPath, this.toString(), ENCODING);
 
     return {
       version,
@@ -118,7 +118,13 @@ export default class Changelog {
     }
   }
 
+  getNextVersion() {
+    const latestVersion = semver.maxSatisfying(this.changelog.releases.map(release => release.version), '*') || Changelog.INITIAL_VERSION;
+
+    return this.releaseType != Changelog.NO_RELEASE_TAG ? semver.inc(latestVersion, this.releaseType) : latestVersion;
+  }
+
   toString() {
-    return this.changelog.toString();
+    return this.changelog.description ? this.changelog.toString() : this.changelog.toString().replace(/(^#\s.*?\n)([\s\S]*?)(?=\n##\s)/, '$1'); // Remove default description added by `keep-a-changelog` if no introduction is present
   }
 }

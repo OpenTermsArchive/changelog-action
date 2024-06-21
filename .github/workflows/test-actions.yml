@@ -48,6 +48,9 @@ jobs:
       - name: Print validation outputed release-type
         run: echo "${{ steps.validate.outputs.release-type }}"
 
+      - name: Print validation outputed next-version
+        run: echo "${{ steps.validate.outputs.next-version }}"
+
   test-release:
     runs-on: ubuntu-latest
     steps:

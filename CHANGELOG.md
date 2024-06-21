@@ -2,6 +2,17 @@
 
 All changes that impact users of this module are documented in this file, in the [Common Changelog](https://common-changelog.org) format with some additional specifications defined in the CONTRIBUTING file. This codebase adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased [minor]
+
+### Fixed
+
+- Prevent the insertion of the default changelog introduction when it is not present with the `release` action
+- Return only the version content rather than the entire changelog content as `content` output of the `release` action
+
+### Added
+
+- Expose `next-version` in `validate` action output
+
 ## 0.3.0 - 2024-06-21
 
 _Full changeset and discussions: [#10](https://github.com/OpenTermsArchive/changelog-action/pull/10)._
