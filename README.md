@@ -39,15 +39,17 @@ jobs:
 
 #### Inputs
 
-| Name | Description | Required | Default |
-|------|-------------|----------|---------|
-| path | Path to the changelog file | No | `./CHANGELOG.md` |
+| Name                | Description                                                                                                                              | Required | Default             |
+|---------------------|------------------------------------------------------------------------------------------------------------------------------------------|----------|---------------------|
+| path                | Path to the changelog file                                                                                                               | No       | `./CHANGELOG.md`    |
+| funders             | A boolean or Regex string to identify funders in the Unreleased section. Set to `true` for default validation, `false` to disable, or provide a custom JavaScript Regex | No       | `false`             |
+| no-release-signature| A boolean or Regex string to identify the no-release signature in the Unreleased section. Set to `true` for default validation, `false` to disable, or provide a custom JavaScript Regex | No       | `true`              |
 
 #### Outputs
 
-| Name | Description |
-|------|-------------|
-| release-type | The release type extracted from the changelog |
+| Name          | Description                              |
+|---------------|------------------------------------------|
+| release-type  | The release type extracted from the changelog |
 
 ### `OpenTermsArchive/manage-changelog/release`
 
@@ -128,14 +130,15 @@ jobs:
 
 #### Inputs
 
-| Name | Description | Required | Default |
-|------|-------------|----------|---------|
-| path | Path to the changelog file | No | `./CHANGELOG.md` |
+| Name   | Description                   | Required | Default             |
+|--------|-------------------------------|----------|---------------------|
+| path   | Path to the changelog file    | No       | `./CHANGELOG.md`    |
+| notice | Custom notice for the release | No       | `Full changeset and discussions: [#<pull_request_number>](<link_to_pull_request>)` |
 
 #### Outputs
 
-| Name | Description |
-|------|-------------|
+| Name    | Description                               |
+|---------|-------------------------------------------|
 | version | The version number extracted from the changelog |
 | content | The content of the release extracted from the changelog |
 
