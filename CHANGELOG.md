@@ -4,7 +4,7 @@ All changes that impact users of this module are documented in this file, in the
 
 ## Unreleased [minor]
 
-> Development of this release was supported by the [French Ministry for Foreign Affairs](https://www.diplomatie.gouv.fr/fr/politique-etrangere-de-la-france/diplomatie-numerique/) through its ministerial [State Startups incubator](https://beta.gouv.fr/startups/open-terms-archive.html) under the aegis of the Ambassador for Digital Affairs.
+> Development of this release was supported by the [French DINUM’s Opérateur de produits interministériels](https://numerique.gouv.fr) and the European Union under [grant n°101121918](https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/opportunities/projects-details/43152860/101121918/DIGITAL) through the [GovTech4All](https://joinup.ec.europa.eu/collection/govtechconnect/govtech4all) consortium.
 
 ### Added
 
@@ -17,7 +17,7 @@ All changes that impact users of this module are documented in this file, in the
 
 _Full changeset and discussions: [#5](https://github.com/OpenTermsArchive/changelog-action/pull/5)._
 
-> Development of this release was supported by the [French Ministry for Foreign Affairs](https://www.diplomatie.gouv.fr/fr/politique-etrangere-de-la-france/diplomatie-numerique/) through its ministerial [State Startups incubator](https://beta.gouv.fr/startups/open-terms-archive.html) under the aegis of the Ambassador for Digital Affairs.
+> Development of this release was supported by the [French DINUM’s Opérateur de produits interministériels](https://numerique.gouv.fr) and the European Union under [grant n°101121918](https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/opportunities/projects-details/43152860/101121918/DIGITAL) through the [GovTech4All](https://joinup.ec.europa.eu/collection/govtechconnect/govtech4all) consortium.
 
 ### Changed
 
@@ -27,7 +27,7 @@ _Full changeset and discussions: [#5](https://github.com/OpenTermsArchive/change
 
 _Full changeset and discussions: [#3](https://github.com/OpenTermsArchive/changelog-action/pull/3)._
 
-> Development of this release was supported by the [French Ministry for Foreign Affairs](https://www.diplomatie.gouv.fr/fr/politique-etrangere-de-la-france/diplomatie-numerique/) through its ministerial [State Startups incubator](https://beta.gouv.fr/startups/open-terms-archive.html) under the aegis of the Ambassador for Digital Affairs.
+> Development of this release was supported by the [French DINUM’s Opérateur de produits interministériels](https://numerique.gouv.fr) and the European Union under [grant n°101121918](https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/opportunities/projects-details/43152860/101121918/DIGITAL) through the [GovTech4All](https://joinup.ec.europa.eu/collection/govtechconnect/govtech4all) consortium.
 
 ### Added
 
