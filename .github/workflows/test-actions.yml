@@ -45,7 +45,7 @@ jobs:
           path: ./src/fixtures/changelog-with-custom-no-release-signature.md
           no-release-signature: '/^_No functional changes made._$/m'
 
-      - name: Print validation output
+      - name: Print validation outputed release-type
         run: echo "${{ steps.validate.outputs.release-type }}"
 
   test-release:
@@ -54,11 +54,27 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Test Release
-        id: release
+      - name: Test release
         uses: ./release
 
-      - name: Print release output
+      - name: Test custom notice release
+        id: custom-notice-release
+        uses: ./release
+        with:
+          notice: "Changeset: [#${{ github.event.number }}](https://github.com/${{ github.event.repository.name }}/pull/${{github.event.number}})."
+
+      - name: Print release outputed version
+        run: echo "${{ steps.custom-notice-release.outputs.version }}"
+
+      - name: Print release outputed content
+        run: echo "${{ steps.custom-notice-release.outputs.content }}"
+      
+      - name: Check custom notice in release output
         run: |
-          echo "${{ steps.release.outputs.version }}" &&
-          echo "${{ steps.release.outputs.content }}"
+          EXPECTED="Changeset: [#${{ github.event.number }}](https://github.com/${{ github.repository }}/pull/${{ github.event.number }})."
+          if [[ "${{ steps.custom-notice-release.outputs.content }}" == *"$EXPECTED"* ]]; then
+            echo "Custom notice found in release output."
+          else
+            echo "Custom notice NOT found in release output."
+            exit 1
+          fi
