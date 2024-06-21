@@ -54,13 +54,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Test release
-        uses: ./release
-
-      - name: Test custom notice release
+      - name: Test release with custom notice
         id: custom-notice-release
         uses: ./release
         with:
+          path: ./src/fixtures/changelog.md
           notice: "Changeset: [#${{ github.event.number }}](https://github.com/${{ github.event.repository.name }}/pull/${{github.event.number}})."
 
       - name: Print release outputed version
