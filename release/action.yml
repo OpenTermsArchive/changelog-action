@@ -2,7 +2,10 @@ name: "Release Changelog"
 description: "Release the changelog and extract the version and content of the release"
 inputs:
   path:
-    description: "Path to the changelog file. Defaults to './CHANGELOG.md' if not specified."
+    description: "Path to the changelog file. Defaults to './CHANGELOG.md'"
+    required: false
+  notice:
+    description: "Custom notice for the release. Defaults to `Full changeset and discussions: [#<pull_request_number>](<link_to_pull_request>)`"
     required: false
 outputs:
   version:

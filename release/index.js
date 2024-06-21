@@ -1,5 +1,3 @@
-#! /usr/bin/env node
-
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -16,14 +14,21 @@ export async function run() {
     pullRequestNumber: process.env.GITHUB_EVENT_PATH ? JSON.parse(await fs.readFile(process.env.GITHUB_EVENT_PATH, ENCODING)).pull_request?.number : null,
     repository: process.env.GITHUB_REPOSITORY,
   };
-  const options = { path: core.getInput('path') || DEFAULT_CHANGELOG_PATH };
 
-  const changelogPath = path.join(env.rootPath, options.path);
-  const changelog = new Changelog(await fs.readFile(changelogPath, ENCODING), env.repository);
+  const options = {
+    path: core.getInput('path') || DEFAULT_CHANGELOG_PATH,
+    notice: core.getInput('notice') || null,
+  };
 
-  const { version, content } = changelog.release(env.pullRequestNumber);
+  const changelog = new Changelog({ changelogPath: path.join(env.rootPath, options.path) });
 
-  await fs.writeFile(changelogPath, changelog.toString(), ENCODING);
+  let { notice } = options;
+
+  if (!notice) {
+    notice = (env.pullRequestNumber && env.repository) ? `Full changeset and discussions: [#${env.pullRequestNumber}](https://github.com/${env.repository}/pull/${env.pullRequestNumber}).` : null;
+  }
+
+  const { version, content } = changelog.release(notice);
 
   core.setOutput('version', version);
   core.setOutput('content', content);
