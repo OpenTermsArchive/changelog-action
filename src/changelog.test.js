@@ -167,29 +167,29 @@ _Full changeset and discussions: [#122](https://github.com/owner/repo/pull/122).
       });
     });
 
-    context('when custom funderRegex is provided', () => {
+    context('when custom fundersRegex is provided', () => {
       context('with valid changelog', () => {
         it('does not throw any error', () => {
-          const customFunderRegex = /^> This release was sponsored by (.+)\.$/m;
+          const customfundersRegex = /^> This release was sponsored by (.+)\.$/m;
 
-          changelog = new Changelog({ ...changelogOptions('changelog-with-custom-funder.md'), funderRegex: customFunderRegex });
+          changelog = new Changelog({ ...changelogOptions('changelog-with-custom-funder.md'), fundersRegex: customfundersRegex });
           expect(() => changelog.validateUnreleased()).to.not.throw();
         });
       });
 
       context('with invalid changelog', () => {
         it('throws a ChangelogValidationError error with proper message', () => {
-          const customFunderRegex = /^> This release was sponsored by (.+)\.$/m;
+          const customfundersRegex = /^> This release was sponsored by (.+)\.$/m;
 
-          changelog = new Changelog({ ...changelogOptions('changelog.md'), funderRegex: customFunderRegex });
+          changelog = new Changelog({ ...changelogOptions('changelog.md'), fundersRegex: customfundersRegex });
           expect(() => changelog.validateUnreleased()).to.throw('Missing funder in the "Unreleased" section');
         });
       });
     });
 
-    context('when funderRegex is explicitly set to false', () => {
+    context('when fundersRegex is explicitly set to false', () => {
       it('skips the funder validation', () => {
-        changelog = new Changelog({ ...changelogOptions('changelog-without-funder.md'), funderRegex: false });
+        changelog = new Changelog({ ...changelogOptions('changelog-without-funder.md'), fundersRegex: false });
         expect(() => changelog.validateUnreleased()).to.not.throw('Missing funder in the "Unreleased" section');
       });
     });

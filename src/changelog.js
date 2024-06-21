@@ -12,14 +12,14 @@ export default class Changelog {
   static NO_RELEASE_TAG = 'no-release';
   static UNRELEASED_REGEX = new RegExp(`## Unreleased[ ]+\\[(major|minor|patch|${Changelog.NO_RELEASE_TAG})\\]`, 'i');
   static NO_RELEASE_SIGNATURE_REGEX = /^_Modifications made in this changeset do not add, remove or alter any behavior, dependency, API or functionality of the software. They only change non-functional parts of the repository, such as the README file or CI workflows._$/m;
-  static FUNDER_REGEX = /^> Development of this release was (?:supported|made on a volunteer basis) by (.+)\.$/m;
+  static FUNDERS_REGEX = /^> Development of this release was (?:supported|made on a volunteer basis) by (.+)\.$/m;
 
-  constructor({ changelogPath, noReleaseSignatureRegex, funderRegex }) {
+  constructor({ changelogPath, noReleaseSignatureRegex, fundersRegex }) {
     this.changelogPath = changelogPath;
     this.rawContent = fs.readFileSync(changelogPath, ENCODING);
 
     this.noReleaseSignatureRegex = noReleaseSignatureRegex === false ? false : (noReleaseSignatureRegex instanceof RegExp && noReleaseSignatureRegex) || Changelog.NO_RELEASE_SIGNATURE_REGEX;
-    this.funderRegex = funderRegex === false ? false : (funderRegex instanceof RegExp && funderRegex) || Changelog.FUNDER_REGEX;
+    this.fundersRegex = fundersRegex === false ? false : (fundersRegex instanceof RegExp && fundersRegex) || Changelog.FUNDERS_REGEX;
 
     this.changelog = keepAChangelogParser(this.rawContent);
     this.changelog.format = 'markdownlint';
@@ -104,7 +104,7 @@ export default class Changelog {
         errors.push(new Error('Missing no release signature'));
       }
     } else {
-      if (this.funderRegex && !this.funderRegex.test(unreleased.description)) {
+      if (this.fundersRegex && !this.fundersRegex.test(unreleased.description)) {
         errors.push(new Error('Missing funder in the "Unreleased" section'));
       }
 
