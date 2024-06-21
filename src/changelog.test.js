@@ -71,31 +71,41 @@ _Full changeset and discussions: [#122](https://github.com/owner/repo/pull/122).
   });
 
   describe('#release', () => {
+    const generatedDate = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}-${String(new Date().getDate()).padStart(2, '0')}`;
+    const expectedVersion = '1.0.0';
+    const expectedContent = `## 1.0.0 - ${generatedDate}
+
+_Full changeset and discussions: [#123](https://github.com/owner/repo/pull/123)._
+
+> Development of this release was supported by a funder.
+
+### Added
+
+- New feature 1`;
+
     context('with a properly formed changelog', () => {
-      it('returns an updated version of the changelog', async () => {
+      it('returns an updated version of the changelog', () => {
         changelog = new Changelog(changelogOptions('changelog.md'));
         let expectedResult = fs.readFileSync(path.resolve(__dirname, './fixtures/changelog-released.md'), 'UTF-8');
         const result = changelog.release('Full changeset and discussions: [#123](https://github.com/owner/repo/pull/123).');
 
-        expectedResult = expectedResult.replace('<DATE_OF_THE_DAY_PLACEHOLDER>', `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}-${String(new Date().getDate()).padStart(2, '0')}`);
+        expectedResult = expectedResult.replace('<DATE_OF_THE_DAY_PLACEHOLDER>', generatedDate);
         expect(changelog.toString()).to.equal(expectedResult);
-        expect(result).to.have.property('version').that.is.not.empty;
-        expect(result).to.have.property('content').that.is.not.empty;
+        expect(result).to.have.property('version').that.is.equal(expectedVersion);
+        expect(result).to.have.property('content').that.is.equal(expectedContent);
       });
     });
 
     context('with a changelog without intro', () => {
-      it('returns an updated version of the changelog withtout default introduction', async () => {
+      it('returns an updated version of the changelog withtout default introduction', () => {
         changelog = new Changelog(changelogOptions('changelog-without-intro.md'));
         let expectedResult = fs.readFileSync(path.resolve(__dirname, './fixtures/changelog-without-intro-released.md'), 'UTF-8');
         const result = changelog.release('Full changeset and discussions: [#123](https://github.com/owner/repo/pull/123).');
 
-        const generatedDate = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}-${String(new Date().getDate()).padStart(2, '0')}`;
-
         expectedResult = expectedResult.replace('<DATE_OF_THE_DAY_PLACEHOLDER>', generatedDate);
         expect(changelog.toString()).to.equal(expectedResult);
-        expect(result).to.have.property('version').that.is.not.empty;
-        expect(result).to.have.property('content').that.is.not.empty;
+        expect(result).to.have.property('version').that.is.equal(expectedVersion);
+        expect(result).to.have.property('content').that.is.equal(expectedContent);
       });
     });
 
@@ -108,7 +118,7 @@ _Full changeset and discussions: [#122](https://github.com/owner/repo/pull/122).
 
         expect(updatedChangelog).to.not.include('## Unreleased');
         expect(result).to.have.property('version').that.is.undefined;
-        expect(result).to.have.property('content').that.is.not.empty;
+        expect(result).to.have.property('content').that.is.undefined;
       });
     });
 

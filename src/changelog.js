@@ -58,6 +58,7 @@ export default class Changelog {
     }
 
     let version;
+    let content;
 
     if (this.releaseType == Changelog.NO_RELEASE_TAG) {
       const index = this.changelog.releases.findIndex(release => !release.version);
@@ -74,9 +75,9 @@ export default class Changelog {
       if (notice) {
         unreleased.description = `_${notice}_\n\n${unreleased.description}`;
       }
-    }
 
-    const content = this.toString();
+      content = unreleased.toString(this.changelog);
+    }
 
     fs.writeFileSync(this.changelogPath, this.toString(), ENCODING);
 
