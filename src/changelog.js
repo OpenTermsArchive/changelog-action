@@ -78,7 +78,7 @@ export default class Changelog {
 
     const content = this.toString();
 
-    fs.writeFileSync(this.changelogPath, content, ENCODING);
+    fs.writeFileSync(this.changelogPath, this.toString(), ENCODING);
 
     return {
       version,
@@ -119,6 +119,6 @@ export default class Changelog {
   }
 
   toString() {
-    return this.changelog.toString();
+    return this.changelog.description ? this.changelog.toString() : this.changelog.toString().replace(/(^#\s.*?\n)([\s\S]*?)(?=\n##\s)/, '$1'); // Remove default description added by `keep-a-changelog` if no introduction is present
   }
 }

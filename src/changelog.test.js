@@ -84,6 +84,21 @@ _Full changeset and discussions: [#122](https://github.com/owner/repo/pull/122).
       });
     });
 
+    context('with a changelog without intro', () => {
+      it('returns an updated version of the changelog withtout default introduction', async () => {
+        changelog = new Changelog(changelogOptions('changelog-without-intro.md'));
+        let expectedResult = fs.readFileSync(path.resolve(__dirname, './fixtures/changelog-without-intro-released.md'), 'UTF-8');
+        const result = changelog.release('Full changeset and discussions: [#123](https://github.com/owner/repo/pull/123).');
+
+        const generatedDate = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}-${String(new Date().getDate()).padStart(2, '0')}`;
+
+        expectedResult = expectedResult.replace('<DATE_OF_THE_DAY_PLACEHOLDER>', generatedDate);
+        expect(changelog.toString()).to.equal(expectedResult);
+        expect(result).to.have.property('version').that.is.not.empty;
+        expect(result).to.have.property('content').that.is.not.empty;
+      });
+    });
+
     context('when release type is no-release', () => {
       it('removes the "Unreleased" section without updating the version', () => {
         changelog = new Changelog(changelogOptions('changelog-with-unreleased-no-release.md'));
