@@ -22,10 +22,10 @@ on:
     outputs:
       release-type:
         description: The release type extracted from changelog
-        value: ${{ jobs.validate_changelog.outputs.release-type }}
+        value: ${{ jobs.validate-changelog.outputs.release-type }}
 
 jobs:
-  validate_changelog:
+  validate-changelog:
     runs-on: [ ubuntu-latest ]
     outputs:
       release-type: ${{ steps.validate-changelog.outputs.release-type }}
