@@ -4,7 +4,7 @@ This codebase exposes two GitHub Actions that help automate validating changelog
 
 ## Actions
 
-### `OpenTermsArchive/manage-changelog/validate`
+### `OpenTermsArchive/changelog-action/validate`
 
 This action validates that the contents of the `Unreleased` section of the changelog matches the [Common Changelog](https://common-changelog.org/) specification with [some additions](#enforced-format), and exposes the upcoming release type.
 
@@ -34,7 +34,7 @@ jobs:
 
       - name: Validate changelog
         id: validate-changelog
-        uses: OpenTermsArchive/manage-changelog/validate@v0.4.0
+        uses: OpenTermsArchive/changelog-action/validate@v0.4.0
 ```
 
 #### Inputs
@@ -52,7 +52,7 @@ jobs:
 | `release-type`  | The release type extracted from the changelog. Possible values `major`, `minor`, `patch` or `no-release` |
 | `next-version`  | Upcoming version computed as a SemVer identifier (e.g. `0.2.0`, `1.0.0`…) |
 
-### `OpenTermsArchive/manage-changelog/release`
+### `OpenTermsArchive/changelog-action/release`
 
 This action calculates the next version number and moves the `Unreleased` section of the changelog as the latest version, or erases its contents if no release is intended. It also exposes the calculated version and the content of that release.
 
@@ -81,7 +81,7 @@ jobs:
 
       - name: Update changelog for release
         id: release-changelog
-        uses: OpenTermsArchive/manage-changelog/release@v0.4.0
+        uses: OpenTermsArchive/changelog-action/release@v0.4.0
 
       - name: Update repository
         run: |
@@ -108,7 +108,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Update changelog for release
-        uses: OpenTermsArchive/manage-changelog/release@v0.4.0
+        uses: OpenTermsArchive/changelog-action/release@v0.4.0
 
       - name: Save changelog
         run: |
