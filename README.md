@@ -22,7 +22,7 @@ on:
     outputs:
       release-type:
         description: The release type extracted from changelog
-        value: ${{ jobs.validate-changelog.outputs.release-type }}
+        value: ${{ jobs.validate_changelog.outputs.release-type }}
 
 jobs:
   validate_changelog:

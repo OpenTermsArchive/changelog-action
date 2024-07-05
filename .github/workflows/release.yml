@@ -1,9 +1,8 @@
 name: Release
 
 on:
-  pull_request_target:
-    branches: 
-      - main
+  push:
+    branches: [ main ]
     types: [ closed ]
 
 jobs:
@@ -18,55 +17,41 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Configure Git author
-        run: |
-          git config --global user.name "Open Terms Archive Release Bot"
-          git config --global user.email "release-bot@opentermsarchive.org"
-
-      - name: Release changelog
+      - name: Update changelog for release
         id: release-changelog
         uses: ./release
 
-      - name: Bump package version
-        run: npm --no-git-tag-version version ${{ steps.release-changelog.outputs.version }}
-
-      - name: Commit CHANGELOG.md and package.json changes and create tag
+      - name: Update repository
         run: |
-          git add "package.json" "package-lock.json" "CHANGELOG.md"
-          git commit -m "Release v${{ steps.release-changelog.outputs.version }}"
+          git config user.name "Open Terms Archive Release Bot"
+          git config user.email "release-bot@opentermsarchive.org"
+          git add "CHANGELOG.md"
+          git commit -m "Update changelog"
           git tag v${{ steps.release-changelog.outputs.version }}
-
-      - name: Push changes to repository
-        run: git push origin && git push --tags
+          git push origin
+          git push --tags
 
       - name: Create GitHub release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.release-changelog.outputs.version }}
           body: ${{ steps.release-changelog.outputs.content }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
-  clean_changelog:
+  clean-changelog:
     if: github.event.pull_request.merged == true && needs.changelog.outputs.release-type == 'no-release'
     needs: [ changelog ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Configure Git author
-        run: |
-          git config --global user.name "Open Terms Archive Release Bot"
-          git config --global user.email "release-bot@opentermsarchive.org"
-
-      - name: Release changelog
+      - name: Update changelog for release
         uses: ./release
 
-      - name: Erase unreleased information from changelog
+      - name: Save changelog
         run: |
+          git config user.name "Open Terms Archive Release Bot"
+          git config user.email "release-bot@opentermsarchive.org"
           git commit -m "Clean changelog" CHANGELOG.md
           git push origin
