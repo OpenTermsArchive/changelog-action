@@ -87,8 +87,7 @@ jobs:
         run: |
           git config user.name "Open Terms Archive Release Bot"
           git config user.email "release-bot@opentermsarchive.org"
-          git add "CHANGELOG.md"
-          git commit -m "Update changelog"
+          git commit --message="Update changelog" CHANGELOG.md
           git tag v${{ steps.release-changelog.outputs.version }}
           git push origin 
           git push --tags
@@ -114,7 +113,7 @@ jobs:
         run: |
           git config user.name "Open Terms Archive Release Bot"
           git config user.email "release-bot@opentermsarchive.org"
-          git commit -m "Clean changelog" CHANGELOG.md
+          git commit --message="Clean changelog" CHANGELOG.md
           git push origin
 ```
 
